@@ -4,7 +4,7 @@ const Tour = require("../models/toursModel");
 
 const tours = JSON.parse(
 	fs.readFileSync(
-		path.join(__dirname, "..", "data", "tour.json"),
+		path.join(__dirname, "..", "data", "toursSample.json"),
 		"utf-8"
 	)
 );
@@ -12,7 +12,7 @@ const tours = JSON.parse(
 const loadTours = async () => {
 	const toursDB = await Tour.find();
 	for (const tour of tours) {
-		if (!toursDB.find((e) => (e.name = tour.name))) {
+		if (!toursDB.find((e) => (e._id = tour._id))) {
 			await Tour.create(tour);
 		}
 	}
