@@ -1,5 +1,5 @@
 const globalErrorHandler = (err, req, res, next) => {
-	return res.json({
+	return res.status(400).json({
 		customError: {
 			name: err.name,
 			message: err.message,
