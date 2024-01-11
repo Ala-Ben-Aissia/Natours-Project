@@ -12,6 +12,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 
 const getTour = catchAsync(async (req, res, next) => {
 	const tour = await Tour.findById(req.params.tourId);
+	if (!tour) return next({ error: "Invalid ID" });
 	res.status(200).json({
 		status: "success",
 		data: tour,
@@ -35,6 +36,7 @@ const updateTour = catchAsync(async (req, res, next) => {
 			new: true,
 		}
 	);
+	if (!tour) return res.status(400).send({ error: "Invalid ID" });
 	res.status(200).json({
 		status: "success",
 		data: tour,
@@ -42,7 +44,8 @@ const updateTour = catchAsync(async (req, res, next) => {
 });
 
 const deleteTour = catchAsync(async (req, res, next) => {
-	await Tour.findByIdAndDelete(req.params.tourId);
+	const tour = await Tour.findByIdAndDelete(req.params.tourId);
+	if (!tour) return res.status(400).send({ error: "Invalid ID" });
 	res.status(204).json({
 		status: "success",
 		data: null,
