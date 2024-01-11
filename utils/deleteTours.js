@@ -1,9 +1,11 @@
-const Tour = require("../models/toursModel");
+const Tour = require("../models/tourModel");
 
 const deleteTours = async () => {
-	await Tour.deleteMany();
-	console.log("Data successfully deleted 🚮");
-	process.exit();
+	if (process.argv[2] === "--delete") {
+		await Tour.deleteMany();
+		console.log("Data successfully deleted 🚮");
+		process.exit();
+	}
 };
 
-module.exports = deleteTours;
+module.exports = deleteTours();

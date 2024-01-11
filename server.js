@@ -2,6 +2,7 @@ const app = require("./app");
 const http = require("http");
 const loadTours = require("./utils/loadTours");
 const mongoConnect = require("./utils/mongoConnect");
+require("./utils/deleteTours");
 
 const PORT = 3000;
 
