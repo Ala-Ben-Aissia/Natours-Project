@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+const mongoose = require("mongoose");
 
-const tourSchema = new Schema({
+const tourSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: [true, "name is required"],
@@ -8,7 +8,7 @@ const tourSchema = new Schema({
 		maxLength: [40, "name must be at most 40 characters"],
 		minLength: [10, "name must be at least 10 characters"],
 		match: [
-			/^[a-zA-Z]+$/,
+			/^[a-zA-Z ]+$/,
 			"name must only contain alphabetic characters",
 		],
 		// validate: {
@@ -50,11 +50,11 @@ const tourSchema = new Schema({
 	summary: {
 		type: String,
 		trim: true,
-		required: [true, "description is required"],
 	},
 	description: {
 		type: String,
 		trim: true,
+		required: [true, "description is required"],
 	},
 	imageCover: {
 		type: String,
@@ -78,4 +78,6 @@ const tourSchema = new Schema({
 	},
 });
 
-const schemaModel = model("Tour", tourSchema);
+const Tour = mongoose.model("Tour", tourSchema);
+
+module.exports = Tour;
