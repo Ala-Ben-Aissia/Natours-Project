@@ -26,8 +26,24 @@ const AddTour = catchAsync(async (req, res, next) => {
 	});
 });
 
+const updateTour = catchAsync(async (req, res, next) => {
+	const tour = await Tour.findByIdAndUpdate(
+		req.params.tourId,
+		req.body,
+		{
+			runValidators: true,
+			new: true,
+		}
+	);
+	res.status(200).json({
+		status: "success",
+		data: tour,
+	});
+});
+
 module.exports = {
 	getAllTours,
 	getTour,
 	AddTour,
+	updateTour,
 };

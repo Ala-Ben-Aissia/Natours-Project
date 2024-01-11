@@ -3,13 +3,14 @@ const {
 	getAllTours,
 	getTour,
 	AddTour,
+	updateTour,
 } = require("../controllers/tourController");
 
 const toursRouter = express.Router();
 
 toursRouter.route("/").get(getAllTours).post(AddTour);
 
-toursRouter.route("/:tourId").get(getTour);
+toursRouter.route("/:tourId").get(getTour).patch(updateTour);
 
 module.exports = {
 	toursRouter,
