@@ -2,11 +2,11 @@ const { default: mongoose } = require("mongoose");
 require("dotenv").config();
 
 mongoose.connection.once("open", () => {
-	console.log("MongoDB connection ready ✅");
+	console.log("MongoDB Connection Succeeded ✅");
 });
 
 mongoose.connection.on("error", (err) => {
-	console.error(`㏈ Connection Failed!`, err);
+	console.error(`MongoDB Connection Failed ❌`, err);
 });
 
 const mongoConnect = async () => {

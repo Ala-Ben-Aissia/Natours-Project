@@ -1,15 +1,9 @@
 const express = require("express");
-const Tour = require("./models/toursModel");
+const Tour = require("./models/tourModel");
+const { toursRouter } = require("./routes/tourRoutes");
 const app = express();
 
 app.use(express.json());
 
-app.get("/tours", async (req, res, next) => {
-	const tours = await Tour.find();
-	return res.status(200).json({
-		status: "success",
-		results: tours.length,
-		data: tours,
-	});
-});
+app.use("/tours", toursRouter);
 module.exports = app;

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const Tour = require("../models/toursModel");
+const Tour = require("../models/tourModel");
 
 const tours = JSON.parse(
 	fs.readFileSync(
