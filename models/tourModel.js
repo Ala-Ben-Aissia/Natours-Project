@@ -101,10 +101,10 @@ tourSchema.pre("save", function (next) {
 // next();
 // })
 
-tourSchema.pre("aggregate", function (next) {
-	console.log(this);
-	next();
-});
+// tourSchema.pre("aggregate", function (next) {
+// 	console.log(this);
+// 	next();
+// });
 
 const Tour = mongoose.model("Tour", tourSchema);
 

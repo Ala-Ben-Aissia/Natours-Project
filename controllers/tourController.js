@@ -80,11 +80,28 @@ const getToursByYear = catchAsync(async (req, res, next) => {
 			},
 		},
 		{
+			$set: { month: "$_id" },
+		},
+		{
+			$project: {
+				_id: 0,
+			},
+		},
+		{
 			$sort: {
-				_id: 1, // for consitent sorting
+				month: -1, // for consitent sorting ()
 			},
 		},
 	]);
+	tours.forEach((tour) => {
+		tour.month = new Date(
+			null,
+			tour.month,
+			null
+		).toLocaleDateString("en-US", {
+			month: "long",
+		});
+	});
 	res.status(200).json({
 		status: "success",
 		results: tours.length,
