@@ -1,4 +1,5 @@
 const Tour = require("../models/tourModel");
+const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
 
 const getAllTours = catchAsync(async (req, res, next) => {
@@ -12,7 +13,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 
 const getTour = catchAsync(async (req, res, next) => {
 	const tour = await Tour.findById(req.params.tourId);
-	if (!tour) return next({ error: "Invalid ID" });
+	if (!tour) return next(new AppError("Tour Not Found!", 404));
 	res.status(200).json({
 		status: "success",
 		data: tour,
@@ -36,7 +37,7 @@ const updateTour = catchAsync(async (req, res, next) => {
 			new: true,
 		}
 	);
-	if (!tour) return res.status(400).send({ error: "Invalid ID" });
+	if (!tour) return next(new AppError("Tour Not Found!", 404));
 	res.status(200).json({
 		status: "success",
 		data: tour,
@@ -45,7 +46,7 @@ const updateTour = catchAsync(async (req, res, next) => {
 
 const deleteTour = catchAsync(async (req, res, next) => {
 	const tour = await Tour.findByIdAndDelete(req.params.tourId);
-	if (!tour) return res.status(400).send({ error: "Invalid ID" });
+	if (!tour) return next(new AppError("Tour Not Found!", 404));
 	res.status(204).json({
 		status: "success",
 		data: null,

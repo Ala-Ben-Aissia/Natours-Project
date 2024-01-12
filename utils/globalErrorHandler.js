@@ -1,9 +1,12 @@
 const globalErrorHandler = (err, req, res, next) => {
-	return res.status(400).json({
+	return res.status(err.statusCode ?? 500).json({
 		customError: {
-			name: err.name,
+			status: err.status ?? "error",
 			message: err.message,
-			stack: err.stack,
+			name: err.name,
+			error: err,
+			isOperational: this.isOperational, // trusted and handled by developers
+			// stack: err.stack,
 		},
 	});
 };
