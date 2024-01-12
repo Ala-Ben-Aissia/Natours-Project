@@ -53,10 +53,50 @@ const deleteTour = catchAsync(async (req, res, next) => {
 	});
 });
 
+const getToursByYear = catchAsync(async (req, res, next) => {
+	// https://www.mongodb.com/docs/manual/reference/operator/aggregation/
+	const year = +req.params.year;
+	const tours = await Tour.aggregate([
+		{
+			$unwind: {
+				path: "$startDates",
+			},
+		},
+		{
+			$match: {
+				startDates: {
+					$gte: new Date(String(year)),
+					$lt: new Date(String(year + 1)),
+				},
+			},
+		},
+		{
+			$group: {
+				_id: { $month: "$startDates" },
+				toursPerMonth: { $sum: 1 },
+				tours: { $push: "$name" },
+				// numRatings: { $sum: "$ratingsQuantity" },
+				// x: { $push: "$ratingsQuantity" },
+			},
+		},
+		{
+			$sort: {
+				_id: 1, // for consitent sorting
+			},
+		},
+	]);
+	res.status(200).json({
+		status: "success",
+		results: tours.length,
+		data: tours,
+	});
+});
+
 module.exports = {
 	getAllTours,
 	getTour,
 	AddTour,
 	updateTour,
 	deleteTour,
+	getToursByYear,
 };

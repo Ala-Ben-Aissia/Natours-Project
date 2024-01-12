@@ -5,6 +5,7 @@ const {
 	AddTour,
 	updateTour,
 	deleteTour,
+	getToursByYear,
 } = require("../controllers/tourController");
 
 const toursRouter = express.Router();
@@ -16,6 +17,8 @@ toursRouter
 	.get(getTour)
 	.patch(updateTour)
 	.delete(deleteTour);
+
+toursRouter.route("/year/:year").get(getToursByYear);
 
 module.exports = {
 	toursRouter,
