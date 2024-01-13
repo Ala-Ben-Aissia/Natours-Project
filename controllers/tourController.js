@@ -1,9 +1,15 @@
 const Tour = require("../models/tourModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const QueryAPI = require("../utils/queryAPI");
 
 const getAllTours = catchAsync(async (req, res, next) => {
-	const tours = await Tour.find();
+	const queryAPI = new QueryAPI(Tour.find(), req.query)
+		.filter()
+		.fields()
+		.sort()
+		.paginate();
+	const tours = await queryAPI.query;
 	res.status(200).json({
 		status: "success",
 		results: tours.length,
