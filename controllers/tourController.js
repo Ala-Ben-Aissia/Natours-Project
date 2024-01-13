@@ -95,7 +95,7 @@ const getToursByYear = catchAsync(async (req, res, next) => {
 		},
 		{
 			$sort: {
-				month: -1, // for consitent sorting (check $set stage)
+				month: 1, // for consitent sorting (check $set stage)
 			},
 		},
 	]);
@@ -115,6 +115,38 @@ const getToursByYear = catchAsync(async (req, res, next) => {
 	});
 });
 
+const getToursStats = catchAsync(async (req, res, next) => {
+	const stats = await Tour.aggregate([
+		{
+			$group: {
+				_id: { $toUpper: "$difficulty" },
+				numTours: { $sum: 1 },
+				avgRating: { $avg: "$ratingsAverage" },
+				maxPrice: { $max: "$price" },
+				minPrice: { $min: "$price" },
+				avgPrice: { $avg: "$price" },
+			},
+		},
+		{
+			$project: {
+				numTours: 1,
+				maxPrice: 1,
+				minPrice: 1,
+				avgPrice: { $round: ["$avgPrice", 1] },
+				avgRating: { $round: ["$avgRating", 1] },
+			},
+		},
+		{
+			$sort: { numTours: -1 },
+		},
+	]);
+	res.status(200).json({
+		status: "success",
+		results: stats.length,
+		stats,
+	});
+});
+
 const top5Tours = (req, res, next) => {
 	req.query.limit = 5;
 	req.query.sort = "-ratingsAverage,price";
@@ -130,4 +162,5 @@ module.exports = {
 	deleteTour,
 	getToursByYear,
 	top5Tours,
+	getToursStats,
 };
