@@ -95,7 +95,7 @@ const getToursByYear = catchAsync(async (req, res, next) => {
 		},
 		{
 			$sort: {
-				month: -1, // for consitent sorting ()
+				month: -1, // for consitent sorting (check $set stage)
 			},
 		},
 	]);
