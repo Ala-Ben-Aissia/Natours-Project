@@ -2,6 +2,7 @@ const express = require("express");
 const { toursRouter } = require("./routes/tourRoutes");
 const globalErrorHandler = require("./utils/globalErrorHandler");
 const morgan = require("morgan");
+
 const app = express();
 
 // Body Parser

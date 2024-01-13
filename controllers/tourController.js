@@ -1,5 +1,5 @@
 const Tour = require("../models/tourModel");
-const AppError = require("../utils/AppError");
+const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
 const getAllTours = catchAsync(async (req, res, next) => {
@@ -12,7 +12,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 });
 
 const getTour = catchAsync(async (req, res, next) => {
-	const tour = await Tour.findById(req.params.tourId);
+	const tour = await Tour.findById(req.params.tourId).exec();
 	if (!tour) return next(new AppError("Tour Not Found!", 404));
 	res.status(200).json({
 		status: "success",

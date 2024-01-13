@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { default: slugify } = require("slugify");
 const { durationConverter } = require("../utils/durationConverter");
-
 const tourSchema = new mongoose.Schema(
 	{
 		name: {
@@ -85,22 +84,48 @@ const tourSchema = new mongoose.Schema(
 		toJSON: { virtuals: true },
 		toObject: { virtuals: true },
 	}
+	// make sure virtual properties are included when converting the document to an object or JSON.
+	// this allows the virtual properties to be properly displayed in the outputs
 );
 
-//virtuals
+//NOTE: Always follow the fat model thin controllers paradigm (MVC)
+
+//* indexing
+// tourSchema.index({ slug: 1 });
+
+//* virtual properties
 tourSchema.virtual("durationWeeks").get(function () {
 	return durationConverter(this.duration);
 });
 
+//NOTE: Always make sure to implement middlewares before compiling the schema into model
+
+//* document middlewares
+// pre-save hook
 tourSchema.pre("save", function (next) {
-	this.slug = slugify(this.name);
+	this.slug = slugify(this.name, { lower: true });
 	next();
 });
 
-// tourSchema.pre(/^find/, function(next) {
-// next();
-// })
+//* query middlewares
+tourSchema.pre(/^find/, async function (next) {
+	this.start = Date.now();
+	// this.find({ vip: false }); => throw error
+	// by default vip is set to false in the schema BUT this does not create a vip field in the db
+	// => it's a mongoose thing..
+	// when creating a new tour with vip set to true, the vip fieldwill be saved in the db which makes ("vip": true) work.
+	this.find({ vip: { $ne: true } });
+	next();
+});
 
+tourSchema.post(/^find/, function (_, next) {
+	console.log(
+		`Query took ${Date.now() - this.start} ms to finsh execution`
+	);
+	next();
+});
+
+//* aggregation middlwares
 // tourSchema.pre("aggregate", function (next) {
 // 	console.log(this);
 // 	next();
