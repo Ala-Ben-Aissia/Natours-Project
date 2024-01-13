@@ -115,6 +115,13 @@ const getToursByYear = catchAsync(async (req, res, next) => {
 	});
 });
 
+const top5Tours = (req, res, next) => {
+	req.query.limit = 5;
+	req.query.sort = "-ratingsAverage,price";
+	req.query.fields = "name,ratingsAverage,price,duration";
+	next();
+};
+
 module.exports = {
 	getAllTours,
 	getTour,
@@ -122,4 +129,5 @@ module.exports = {
 	updateTour,
 	deleteTour,
 	getToursByYear,
+	top5Tours,
 };
