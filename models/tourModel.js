@@ -88,6 +88,9 @@ const tourSchema = new mongoose.Schema(
 	// this allows the virtual properties to be properly displayed in the outputs
 );
 
+//TODO: add location, starting location, roles (tourGuide and tourLeader)
+//TODO: add user model, refer each  tour role to user instance
+
 //NOTE: Always follow the fat model thin controllers paradigm (MVC)
 
 //* indexing
@@ -108,8 +111,8 @@ tourSchema.pre("save", function (next) {
 });
 
 //* query middlewares
-tourSchema.pre(/^find/, async function (next) {
-	this.start = Date.now();
+tourSchema.pre(/^find/, function (next) {
+	// this.start = Date.now();
 	// this.find({ vip: false }); => throw error
 	// by default vip is set to false in the schema BUT this does not create a vip field in the db
 	// => it's a mongoose thing..
@@ -119,9 +122,9 @@ tourSchema.pre(/^find/, async function (next) {
 });
 
 tourSchema.post(/^find/, function (_, next) {
-	console.log(
-		`Query took ${Date.now() - this.start} ms to finsh execution`
-	);
+	// console.log(
+	// 	`Query took ${Date.now() - this.start} ms to finsh execution`
+	// );
 	next();
 });
 
