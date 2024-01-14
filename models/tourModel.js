@@ -79,6 +79,30 @@ const tourSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		// https://www.mongodb.com/docs/manual/geospatial-queries/
+		// https://www.mongodb.com/docs/manual/reference/geojson/
+		locations: [
+			{
+				description: String,
+				type: {
+					type: String,
+					default: "Point",
+					enum: ["Point"],
+				},
+				coordinates: [Number],
+				day: Number,
+			},
+		],
+		startLocation: {
+			description: String,
+			type: {
+				type: String,
+				default: "Point",
+				enum: ["Point"],
+			},
+			coordinates: [Number],
+			address: String,
+		},
 	},
 	{
 		toJSON: { virtuals: true },
@@ -88,7 +112,7 @@ const tourSchema = new mongoose.Schema(
 	// this allows the virtual properties to be properly displayed in the outputs
 );
 
-//TODO: add location, starting location, roles (tourGuide and tourLeader)
+//TODO: add locations, starting location, roles (tourGuide and tourLeader)
 //TODO: add user model, refer each  tour role to user instance
 
 //NOTE: Always follow the fat model thin controllers paradigm (MVC)

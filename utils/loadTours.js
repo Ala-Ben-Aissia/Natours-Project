@@ -4,7 +4,7 @@ const Tour = require("../models/tourModel");
 
 const tours = JSON.parse(
 	fs.readFileSync(
-		path.join(__dirname, "..", "data", "toursSample.json"),
+		path.join(__dirname, "..", "data", "tours.json"),
 		"utf-8"
 	)
 );
