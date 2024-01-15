@@ -3,7 +3,7 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const QueryAPI = require("../utils/queryAPI");
 
-const getAllTours = catchAsync(async (req, res, next) => {
+exports.getAllTours = catchAsync(async (req, res, next) => {
 	const queryAPI = new QueryAPI(Tour.find(), req.query)
 		.filter()
 		.fields()
@@ -17,7 +17,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 	});
 });
 
-const getTour = catchAsync(async (req, res, next) => {
+exports.getTour = catchAsync(async (req, res, next) => {
 	const tour = await Tour.findById(req.params.tourId).exec();
 	if (!tour) return next(new AppError("Tour Not Found!", 404));
 	res.status(200).json({
@@ -26,7 +26,7 @@ const getTour = catchAsync(async (req, res, next) => {
 	});
 });
 
-const AddTour = catchAsync(async (req, res, next) => {
+exports.AddTour = catchAsync(async (req, res, next) => {
 	const newTour = await Tour.create(req.body);
 	res.status(201).json({
 		status: "success",
@@ -34,7 +34,7 @@ const AddTour = catchAsync(async (req, res, next) => {
 	});
 });
 
-const updateTour = catchAsync(async (req, res, next) => {
+exports.updateTour = catchAsync(async (req, res, next) => {
 	const tour = await Tour.findByIdAndUpdate(
 		req.params.tourId,
 		req.body,
@@ -50,7 +50,7 @@ const updateTour = catchAsync(async (req, res, next) => {
 	});
 });
 
-const deleteTour = catchAsync(async (req, res, next) => {
+exports.deleteTour = catchAsync(async (req, res, next) => {
 	const tour = await Tour.findByIdAndDelete(req.params.tourId);
 	if (!tour) return next(new AppError("Tour Not Found!", 404));
 	res.status(204).json({
@@ -59,7 +59,7 @@ const deleteTour = catchAsync(async (req, res, next) => {
 	});
 });
 
-const getToursByYear = catchAsync(async (req, res, next) => {
+exports.getToursByYear = catchAsync(async (req, res, next) => {
 	// https://www.mongodb.com/docs/manual/reference/operator/aggregation/
 	const year = +req.params.year;
 	const tours = await Tour.aggregate([
@@ -115,7 +115,7 @@ const getToursByYear = catchAsync(async (req, res, next) => {
 	});
 });
 
-const getToursStats = catchAsync(async (req, res, next) => {
+exports.getToursStats = catchAsync(async (req, res, next) => {
 	const stats = await Tour.aggregate([
 		{
 			$group: {
@@ -147,20 +147,28 @@ const getToursStats = catchAsync(async (req, res, next) => {
 	});
 });
 
-const top5Tours = (req, res, next) => {
+exports.top5Tours = (req, res, next) => {
 	req.query.limit = 5;
 	req.query.sort = "-ratingsAverage,price";
 	req.query.fields = "name,ratingsAverage,price,duration";
 	next();
 };
 
-module.exports = {
-	getAllTours,
-	getTour,
-	AddTour,
-	updateTour,
-	deleteTour,
-	getToursByYear,
-	top5Tours,
-	getToursStats,
-};
+exports.getToursWithIn = catchAsync(async (req, res) => {
+	const { distance, center } = req.query;
+	const radius = +distance / 6371; // Earth Radius: 6371 km
+	const [lng, lat] = center.split(",").map((e) => +e);
+	const tours = await Tour.find({
+		startLocation: {
+			$geoWithin: {
+				$centerSphere: [[lng, lat], radius],
+			},
+		},
+	});
+	res.status(200).json({
+		results: tours.length,
+		data: {
+			tours,
+		},
+	});
+});

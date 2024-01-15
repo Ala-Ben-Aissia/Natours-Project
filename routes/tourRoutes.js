@@ -1,30 +1,28 @@
 const express = require("express");
-const {
-	getAllTours,
-	getTour,
-	AddTour,
-	updateTour,
-	deleteTour,
-	getToursByYear,
-	top5Tours,
-	getToursStats,
-} = require("../controllers/tourController");
+const tourController = require("../controllers/tourController");
 
 const toursRouter = express.Router();
 
-toursRouter.route("/stats").get(getToursStats);
+toursRouter.route("/range").get(tourController.getToursWithIn);
 
-toursRouter.route("/top-5").get(top5Tours, getAllTours);
+toursRouter.route("/stats").get(tourController.getToursStats);
 
-toursRouter.route("/:year").get(getToursByYear);
+toursRouter
+	.route("/top-5")
+	.get(tourController.top5Tours, tourController.getAllTours);
 
-toursRouter.route("/").get(getAllTours).post(AddTour);
+toursRouter.route("/:year").get(tourController.getToursByYear);
+
+toursRouter
+	.route("/")
+	.get(tourController.getAllTours)
+	.post(tourController.AddTour);
 
 toursRouter
 	.route("/:tourId")
-	.get(getTour)
-	.patch(updateTour)
-	.delete(deleteTour);
+	.get(tourController.getTour)
+	.patch(tourController.updateTour)
+	.delete(tourController.deleteTour);
 
 module.exports = {
 	toursRouter,

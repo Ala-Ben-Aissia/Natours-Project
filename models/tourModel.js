@@ -118,6 +118,8 @@ const tourSchema = new mongoose.Schema(
 //NOTE: Always follow the fat model thin controllers paradigm (MVC)
 
 //* indexing
+// https://www.mongodb.com/docs/manual/core/indexes/index-types/geospatial/2dsphere/#std-label-2dsphere-index
+tourSchema.index({ startLocation: "2dsphere" });
 // tourSchema.index({ slug: 1 });
 
 //* virtual properties
