@@ -155,8 +155,9 @@ exports.top5Tours = (req, res, next) => {
 };
 
 exports.getToursWithIn = catchAsync(async (req, res) => {
-	const { distance, center } = req.query;
-	const radius = +distance / 6371; // Earth Radius: 6371 km
+	const { distance, center, unit } = req.query;
+	const radius =
+		unit === "mil" ? distance / 3963.19 : distance / 6378.19;
 	const [lng, lat] = center.split(",").map((e) => +e);
 	const tours = await Tour.find({
 		startLocation: {
