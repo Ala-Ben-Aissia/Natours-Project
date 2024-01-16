@@ -118,9 +118,22 @@ const tourSchema = new mongoose.Schema(
 //NOTE: Always follow the fat model thin controllers paradigm (MVC)
 
 //* indexing
+// https://www.mongodb.com/docs/manual/core/data-model-operations/#indexes
+//? index types:
+// https://www.mongodb.com/docs/manual/core/indexes/index-types/
+//? Single field indexes
+// https://www.mongodb.com/docs/manual/core/indexes/index-types/index-single/
+// tourSchema.index({slug: 1}) // useless cause name is already and index (unique)
+//? Geospatial indexes
 // https://www.mongodb.com/docs/manual/core/indexes/index-types/geospatial/2dsphere/#std-label-2dsphere-index
 tourSchema.index({ startLocation: "2dsphere" });
-// tourSchema.index({ slug: 1 });
+//? Compound indexes
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+
+//* manage indexing
+// https://www.mongodb.com/docs/compass/current/indexes/#std-label-compass-indexes
+//* strategies
+// https://www.mongodb.com/docs/manual/applications/indexes/#indexing-strategies
 
 //* virtual properties
 tourSchema.virtual("durationWeeks").get(function () {
