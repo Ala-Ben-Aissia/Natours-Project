@@ -112,7 +112,7 @@ const tourSchema = new mongoose.Schema(
 	// this allows the virtual properties to be properly displayed in the outputs
 );
 
-//TODO: add locations, starting location, roles (tourGuide and tourLeader)
+//TODO: add roles (tourGuide and tourLeader)
 //TODO: add user model, refer each  tour role to user instance
 
 //NOTE: Always follow the fat model thin controllers paradigm (MVC)
@@ -143,7 +143,6 @@ tourSchema.virtual("durationWeeks").get(function () {
 //NOTE: Always make sure to implement middlewares before compiling the schema into model
 
 //* document middlewares
-// pre-save hook
 tourSchema.pre("save", function (next) {
 	this.slug = slugify(this.name, { lower: true });
 	next();
@@ -160,7 +159,7 @@ tourSchema.pre(/^find/, function (next) {
 	next();
 });
 
-tourSchema.post(/^find/, function (_, next) {
+tourSchema.post(/^find/, function (doc, next) {
 	// console.log(
 	// 	`Query took ${Date.now() - this.start} ms to finsh execution`
 	// );
@@ -169,8 +168,8 @@ tourSchema.post(/^find/, function (_, next) {
 
 //* aggregation middlwares
 // tourSchema.pre("aggregate", function (next) {
-// 	console.log(this);
-// 	next();
+// console.log(this.pipeline());
+// next();
 // });
 
 const Tour = mongoose.model("Tour", tourSchema);
