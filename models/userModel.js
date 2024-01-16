@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: [true, "PasswordConfirm is required"],
 		validate: {
-			validator: function (val) {
-				return val === this.password;
+			validator: function (confirm) {
+				return confirm === this.password;
 			},
 			message: "Passwords do not match",
 		},
