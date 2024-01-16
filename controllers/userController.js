@@ -1,13 +1,14 @@
 const User = require("../models/userModel");
-const catchAsync = require("../utils/catchAsync");
+const {
+	getAllDocs,
+	getDoc,
+	createDoc,
+	updateDoc,
+	deleteDoc,
+} = require("../utils/docCRUD");
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-	const users = await User.find();
-	return res.status(200).json({
-		status: "success",
-		results: users.length,
-		data: {
-			users,
-		},
-	});
-});
+exports.getAllUsers = getAllDocs(User);
+exports.getUser = getDoc(User);
+exports.createUser = createDoc(User);
+exports.updateUser = updateDoc(User);
+exports.deleteUser = deleteDoc(User);
