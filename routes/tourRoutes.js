@@ -3,6 +3,10 @@ const tourController = require("../controllers/tourController");
 
 const toursRouter = express.Router();
 
+toursRouter
+	.route("/distances/coords/:coords/unit/:unit")
+	.get(tourController.getDistTours);
+
 toursRouter.route("/range").get(tourController.getToursWithIn);
 
 toursRouter.route("/stats").get(tourController.getToursStats);

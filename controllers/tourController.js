@@ -173,3 +173,40 @@ exports.getToursWithIn = catchAsync(async (req, res) => {
 		},
 	});
 });
+
+exports.getDistTours = catchAsync(async (req, res) => {
+	const { coords, unit } = req.params;
+	const [lat, lng] = coords.split(",").map((e) => +e);
+	const multiplier = unit === "km" ? 1 / 1000 : 1 / 1609.34;
+	// https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/#-geonear--aggregation-
+	const tours = await Tour.aggregate([
+		{
+			$geoNear: {
+				near: {
+					type: "Point",
+					coordinates: [lng, lat],
+				},
+				distanceField: "distance",
+				spherical: true,
+				distanceMultiplier: multiplier,
+			},
+		},
+		{
+			$project: {
+				name: 1,
+				distance: 1,
+			},
+		},
+		{
+			$sort: {
+				distance: 1,
+			},
+		},
+	]);
+	res.status(200).json({
+		status: "success",
+		data: {
+			tours,
+		},
+	});
+});
