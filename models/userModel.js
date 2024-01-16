@@ -40,6 +40,11 @@ const userSchema = new mongoose.Schema({
 		},
 		select: false,
 	},
+	active: {
+		type: Boolean,
+		default: true,
+		select: false,
+	},
 });
 
 const User = mongoose.model("User", userSchema);
