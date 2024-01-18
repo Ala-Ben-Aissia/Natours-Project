@@ -52,10 +52,14 @@ const userSchema = new mongoose.Schema({
 		default: Date.now(),
 		// select: false,
 	},
+	passwordChangedAt: Date,
+	passwordResetToken: String,
+	passwordResetTokenEXP: Date,
 });
 
 userSchema.pre("save", async function (next) {
-	if (!this.isModified("password")) return next();
+	console.log(this.isModified("password"));
+	// hash passwords before saved
 	this.password = await bcrypt.hash(this.password, 12);
 	this.passwordConfirm = undefined; // useful only when registration
 	next();
@@ -74,6 +78,10 @@ userSchema.post(/^find/, function (doc, next) {
 	// );
 	next();
 });
+
+userSchema.methods.checkPwd = function () {
+	// console.log(this.isModified("password"));
+};
 
 const User = mongoose.model("User", userSchema);
 

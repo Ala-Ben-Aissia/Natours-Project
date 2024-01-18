@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../utils/appError");
 
 const sendNewJWT = (res, user, code) => {
-	const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+	const payload = { id: user.id };
+	const token = jwt.sign(payload, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
 	});
 	res.status(code).json({
@@ -35,4 +36,20 @@ exports.login = catchAsync(async (req, res, next) => {
 	const user = await User.findOne({ email });
 	if (!user) return next(new AppError("Wrong credentials", 403));
 	sendNewJWT(res, user, 200);
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+	// jwt verification
+	if (!req.headers.authorization?.startsWith("Bearer")) {
+		return next(new AppError("Login to grant access", 403));
+	}
+	const [type, token] = req.headers.authorization.split(" ");
+	const payload = jwt.verify(token, process.env.JWT_SECRET);
+	const user = await User.findById(payload.id);
+	if (!user) return next("OoOps! User doesn't exists..");
+	res.json({
+		payload,
+	});
+
+	next();
 });

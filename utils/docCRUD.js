@@ -1,3 +1,4 @@
+const User = require("../models/userModel");
 const AppError = require("./appError");
 const catchAsync = require("./catchAsync");
 exports.getAllDocs = (Model) =>
