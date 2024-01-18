@@ -47,6 +47,12 @@ exports.protect = catchAsync(async (req, res, next) => {
 	const payload = jwt.verify(token, process.env.JWT_SECRET);
 	const user = await User.findById(payload.id);
 	if (!user) return next("OoOps! User doesn't exists..");
+	/**
+	 * what if:
+	 * 1. user has changed his password => update jwt
+	 * 2. user has logged out => destroy jwt
+	 * 3. user has been deleted => destroy jwt
+	 */
 	res.json({
 		payload,
 	});
