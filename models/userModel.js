@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		minLength: [8, "Password must be at least 8 characters long"],
 		required: [true, "Password is required"],
-		// select: false,
+		select: false,
 	},
 	passwordConfirm: {
 		type: String,
@@ -40,17 +40,17 @@ const userSchema = new mongoose.Schema({
 			},
 			message: "Passwords do not match",
 		},
-		// select: false,
+		select: false,
 	},
 	active: {
 		type: Boolean,
 		default: true,
-		// select: false,
+		select: false,
 	},
 	createdAt: {
 		type: Date,
 		default: Date.now(),
-		// select: false,
+		select: false,
 	},
 	passwordChangedAt: Date,
 	passwordResetToken: String,
@@ -58,8 +58,9 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function (next) {
-	console.log(this.isModified("password"));
-	// hash passwords before saved
+	// only hash password when after modified
+	if (!this.isModified("password")) return next();
+	// hash passwor\
 	this.password = await bcrypt.hash(this.password, 12);
 	this.passwordConfirm = undefined; // useful only when registration
 	next();
@@ -79,8 +80,13 @@ userSchema.post(/^find/, function (doc, next) {
 	next();
 });
 
-userSchema.methods.checkPwd = function () {
-	// console.log(this.isModified("password"));
+userSchema.methods.checkPwd = async function (rawPwd, hashedPwd) {
+	return await bcrypt.compare(rawPwd, hashedPwd);
+};
+
+userSchema.methods.changedPwd = function (JWTtimestamp) {
+	if (!this.passwordChangedAt) return false;
+	return JWTtimestamp < this.passwordChangedAt.getTime() / 1000;
 };
 
 const User = mongoose.model("User", userSchema);

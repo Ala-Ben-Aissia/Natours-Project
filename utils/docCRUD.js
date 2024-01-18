@@ -1,9 +1,14 @@
 const User = require("../models/userModel");
 const AppError = require("./appError");
 const catchAsync = require("./catchAsync");
+const queryAPI = require("../utils/queryAPI");
 exports.getAllDocs = (Model) =>
 	catchAsync(async (req, res, next) => {
-		const docs = await Model.find();
+		const docs = await new queryAPI(Model.find(), req.query)
+			.filter()
+			.sort()
+			.limitFields()
+			.paginate();
 		return res.status(200).json({
 			status: "success",
 			results: docs.length,
