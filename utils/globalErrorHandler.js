@@ -8,7 +8,7 @@ const handleErrorsDev = (err, res) => {
 			name: err.name,
 			error: err,
 			isOperational: this.isOperational, // trusted and handled by developers
-			// stack: err.stack,
+			stack: err.stack,
 		},
 	});
 };

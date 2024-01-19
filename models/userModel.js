@@ -68,6 +68,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.pre(/^find/, function (next) {
 	// this.start = Date.now();
+	this.find({ active: true });
 	next();
 });
 
