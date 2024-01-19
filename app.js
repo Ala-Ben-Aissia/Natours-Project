@@ -14,9 +14,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Tours middleware
-app.use("/tours", toursRouter);
-app.use("/users", userRouter);
-app.use("/auth", authRouter);
+app.use("/api/v1/tours", toursRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 // Global Error Handling
 app.use(globalErrorHandler);

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const userSchema = new mongoose.Schema({
 	username: {
 		type: String,
@@ -40,17 +41,17 @@ const userSchema = new mongoose.Schema({
 			},
 			message: "Passwords do not match",
 		},
-		select: false,
+		// select: false, => useless because this field won't persist in the db
 	},
 	active: {
 		type: Boolean,
 		default: true,
-		select: false,
+		// select: false,
 	},
 	createdAt: {
 		type: Date,
 		default: Date.now(),
-		select: false,
+		// select: false,
 	},
 	passwordChangedAt: Date,
 	passwordResetToken: String,
@@ -58,17 +59,23 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function (next) {
-	// only hash password when after modified
+	// only hash password when modified
+	// this will prevent from hashing the pwd again and again (when updating any other field)
 	if (!this.isModified("password")) return next();
-	// hash passwor\
+	// hash password
 	this.password = await bcrypt.hash(this.password, 12);
 	this.passwordConfirm = undefined; // useful only when registration
 	next();
 });
+userSchema.pre("save", async function (next) {
+	if (!this.isModified("password") || this.isNew) return next();
+	this.passwordChangedAt = Date.now();
+	next();
+});
 
 userSchema.pre(/^find/, function (next) {
-	// this.start = Date.now();
 	this.find({ active: true });
+	this.select("-__v");
 	next();
 });
 
@@ -85,9 +92,22 @@ userSchema.methods.checkPwd = async function (rawPwd, hashedPwd) {
 	return await bcrypt.compare(rawPwd, hashedPwd);
 };
 
-userSchema.methods.changedPwd = function (JWTtimestamp) {
+userSchema.methods.changedPwd = function (tokenTimestamp) {
 	if (!this.passwordChangedAt) return false;
-	return JWTtimestamp < this.passwordChangedAt.getTime() / 1000;
+	return tokenTimestamp < this.passwordChangedAt.getTime() / 1000;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+	const token = crypto.randomBytes(32).toString("hex");
+	const hashedToken = crypto
+		.createHash("sha256")
+		.update(token)
+		.digest("hex");
+	this.passwordResetToken = hashedToken;
+	this.passwordResetTokenEXP =
+		Date.now() + process.env.RESET_TOKEN_EXPIRES_IN * 1;
+	// console.log(token, hashedToken);
+	return token;
 };
 
 const User = mongoose.model("User", userSchema);

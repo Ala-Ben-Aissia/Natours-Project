@@ -10,26 +10,42 @@ toursRouter
 
 toursRouter.route("/range").get(tourController.getToursWithIn);
 
-toursRouter.route("/stats").get(tourController.getToursStats);
-
 toursRouter
 	.route("/top-5")
 	.get(tourController.top5Tours, tourController.getAllTours);
 
-toursRouter.route("/:year").get(tourController.getToursByYear);
+toursRouter.route("/stats").get(tourController.getToursStats);
 
-toursRouter.use(authController.protect);
+toursRouter
+	.route("/monthly-plan/:year")
+	.get(
+		authController.protect,
+		authController.restrictTo(["admin", "leader", "guide"]),
+		tourController.getToursByYear
+	);
 
 toursRouter
 	.route("/")
 	.get(tourController.getAllTours)
-	.post(tourController.AddTour);
+	.post(
+		authController.protect,
+		authController.restrictTo(["admin", "leader"]),
+		tourController.AddTour
+	);
 
 toursRouter
-	.route("/:tourId")
+	.route("/:id")
 	.get(tourController.getTour)
-	.patch(tourController.updateTour)
-	.delete(tourController.deleteTour);
+	.patch(
+		authController.protect,
+		authController.restrictTo(["admin", "leader"]),
+		tourController.updateTour
+	)
+	.delete(
+		authController.protect,
+		authController.restrictTo(["admin", "leader"]),
+		tourController.deleteTour
+	);
 
 module.exports = {
 	toursRouter,

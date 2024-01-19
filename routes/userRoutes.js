@@ -1,7 +1,13 @@
 const express = require("express");
 const userController = require("../controllers/userController");
+const {
+	protect,
+	restrictTo,
+} = require("../controllers/authController");
 
 const userRouter = express.Router();
+
+userRouter.use(protect, restrictTo(["admin"]));
 
 userRouter
 	.route("/")

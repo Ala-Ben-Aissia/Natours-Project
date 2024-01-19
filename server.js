@@ -4,6 +4,8 @@ const mongoConnect = require("./utils/mongoConnect");
 require("./data/importData");
 require("./data/deleteData");
 
+const { PORT } = process.env;
+
 // * for synchronous operations
 process.on("uncaughtException", (error, origin) => {
 	console.log("❌ UNCAUGHT EXCEPTION Shutting down...");
@@ -11,11 +13,8 @@ process.on("uncaughtException", (error, origin) => {
 	console.log("⛔️ ORIGIN ⛔️: %s", origin);
 });
 
-const PORT = 3000;
-
 const server = http.createServer(app);
 const startServer = async () => {
-	// ala();
 	await mongoConnect();
 	server.listen(PORT, () => {
 		console.log("Listening on port 3000 👂");

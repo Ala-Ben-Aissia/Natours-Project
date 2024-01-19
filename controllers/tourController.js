@@ -1,63 +1,20 @@
 const Tour = require("../models/tourModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
-const QueryAPI = require("../utils/queryAPI");
+const {
+	getAllDocs,
+	getDoc,
+	createDoc,
+	updateDoc,
+	deleteDoc,
+} = require("../utils/docCRUD");
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-	const queryAPI = new QueryAPI(Tour.find(), req.query)
-		.filter()
-		.fields()
-		.sort()
-		.paginate();
-	const tours = await queryAPI.query;
-	res.status(200).json({
-		status: "success",
-		results: tours.length,
-		data: tours,
-	});
-});
+exports.getAllTours = getAllDocs(Tour);
 
-exports.getTour = catchAsync(async (req, res, next) => {
-	const tour = await Tour.findById(req.params.tourId).exec();
-	if (!tour) return next(new AppError("Tour Not Found!", 404));
-	res.status(200).json({
-		status: "success",
-		data: tour,
-	});
-});
-
-exports.AddTour = catchAsync(async (req, res, next) => {
-	const newTour = await Tour.create(req.body);
-	res.status(201).json({
-		status: "success",
-		data: newTour,
-	});
-});
-
-exports.updateTour = catchAsync(async (req, res, next) => {
-	const tour = await Tour.findByIdAndUpdate(
-		req.params.tourId,
-		req.body,
-		{
-			runValidators: true,
-			new: true,
-		}
-	);
-	if (!tour) return next(new AppError("Tour Not Found!", 404));
-	res.status(200).json({
-		status: "success",
-		data: tour,
-	});
-});
-
-exports.deleteTour = catchAsync(async (req, res, next) => {
-	const tour = await Tour.findByIdAndDelete(req.params.tourId);
-	if (!tour) return next(new AppError("Tour Not Found!", 404));
-	res.status(204).json({
-		status: "success",
-		data: null,
-	});
-});
+exports.getTour = getDoc(Tour);
+exports.AddTour = createDoc(Tour);
+exports.updateTour = updateDoc(Tour);
+exports.deleteTour = deleteDoc(Tour);
 
 exports.getToursByYear = catchAsync(async (req, res, next) => {
 	// https://www.mongodb.com/docs/manual/reference/operator/aggregation/
