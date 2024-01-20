@@ -46,12 +46,12 @@ const userSchema = new mongoose.Schema({
 	active: {
 		type: Boolean,
 		default: true,
-		// select: false,
+		select: false,
 	},
 	createdAt: {
 		type: Date,
 		default: Date.now(),
-		// select: false,
+		select: false,
 	},
 	passwordChangedAt: Date,
 	passwordResetToken: String,
@@ -69,13 +69,12 @@ userSchema.pre("save", async function (next) {
 });
 userSchema.pre("save", async function (next) {
 	if (!this.isModified("password") || this.isNew) return next();
-	this.passwordChangedAt = Date.now();
+	this.passwordChangedAt = Date.now(); // when existing user modifies his pwd
 	next();
 });
 
 userSchema.pre(/^find/, function (next) {
-	this.find({ active: true });
-	this.select("-__v");
+	this.find({ active: true }).select("-__v");
 	next();
 });
 

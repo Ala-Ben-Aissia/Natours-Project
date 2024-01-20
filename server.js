@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const app = require("./app");
 const http = require("http");
 const mongoConnect = require("./utils/mongoConnect");
@@ -5,14 +6,6 @@ require("./data/importData");
 require("./data/deleteData");
 
 const { PORT } = process.env;
-
-// * for synchronous operations
-process.on("uncaughtException", (error, origin) => {
-	console.log("❌ UNCAUGHT EXCEPTION Shutting down...");
-	console.log("⛔️ ERROR ⛔️: %s: %s", error.name, error.message);
-	console.log("⛔️ ORIGIN ⛔️: %s", origin);
-});
-
 const server = http.createServer(app);
 const startServer = async () => {
 	await mongoConnect();
@@ -21,7 +14,12 @@ const startServer = async () => {
 	});
 };
 
-startServer();
+// * for synchronous operations
+process.on("uncaughtException", (error, origin) => {
+	console.log("❌ UNCAUGHT EXCEPTION Shutting down...");
+	console.log("⛔️ ERROR ⛔️: %s: %s", error.name, error.message);
+	console.log("⛔️ ORIGIN ⛔️: %s", origin);
+});
 
 // * for asynchronous operations
 process.on("unhandledRejection", (reason, promise) => {
@@ -32,7 +30,9 @@ process.on("unhandledRejection", (reason, promise) => {
 		reason.message
 	);
 	console.log("⛔️ PROMISE ⛔️: %s", promise);
-	// server.close(() => {
-	// 	process.exit();
-	// });
+	server.close(() => {
+		process.exit();
+	});
 });
+
+startServer();

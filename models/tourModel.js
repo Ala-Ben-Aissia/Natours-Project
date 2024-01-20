@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { default: slugify } = require("slugify");
 const { durationConverter } = require("../utils/durationConverter");
+const User = require("../models/userModel.js");
+
 const tourSchema = new mongoose.Schema(
 	{
 		name: {
@@ -103,6 +105,12 @@ const tourSchema = new mongoose.Schema(
 			coordinates: [Number],
 			address: String,
 		},
+		guides: [
+			{
+				type: mongoose.SchemaTypes.ObjectId,
+				ref: "User",
+			},
+		],
 	},
 	{
 		toJSON: { virtuals: true },
@@ -111,9 +119,6 @@ const tourSchema = new mongoose.Schema(
 	// make sure virtual properties are included when converting the document to an object or JSON.
 	// this allows the virtual properties to be properly displayed in the outputs
 );
-
-//TODO: add roles (tourGuide and tourLeader)
-//TODO: add user model, refer each  tour role to user instance
 
 //NOTE: Always follow the fat model thin controllers paradigm (MVC)
 
@@ -155,7 +160,10 @@ tourSchema.pre(/^find/, function (next) {
 	// by default vip is set to false in the schema BUT this does not create a vip field in the db
 	// => it's a mongoose thing..
 	// when creating a new tour with vip set to true, the vip fieldwill be saved in the db which makes ("vip": true) work.
-	this.find({ vip: { $ne: true } });
+	this.find({ vip: { $ne: true } }).populate({
+		path: "guides",
+		select: "username role",
+	});
 	next();
 });
 

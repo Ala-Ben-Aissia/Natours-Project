@@ -106,7 +106,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 		await sendEmail(options);
 		res.status(200).json({
 			status: "success",
-			message: "Password reset Link has been sent to the user",
+			message: "Password reset link has been sent to the user",
 		});
 	} catch (error) {
 		user.passwordResetToken = undefined;
@@ -141,6 +141,27 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 	sendNewJWT(res, user, 200); // ≈ set jwt for user to log in with…
 });
 
+exports.updatePassword = catchAsync(async (req, res, next) => {
+	const { user } = req;
+	const { password, passwordConfirm, newPassword } = req.body;
+	// if (!user.checkPwd(password, user.password))
+	const currentUser = await User.findById(user.id).select(
+		"+password"
+	);
+
+	const correctPasswords = await currentUser.checkPwd(
+		password,
+		currentUser.password
+	);
+	if (!correctPasswords)
+		return next(
+			new AppError("Please re-check your passwords!", 401)
+		);
+	currentUser.password = newPassword;
+	await currentUser.save({ validateModifiedOnly: true });
+	sendNewJWT(res, user, 200);
+});
+
 exports.getMe = (req, _, next) => {
 	// setting userID before getUser
 	req.params.id = req.user.id;
@@ -149,4 +170,27 @@ exports.getMe = (req, _, next) => {
 
 exports.updateMe = catchAsync(async (req, res, next) => {
 	const { user } = req;
+	const allowedUpdates = {
+		username: req.body.username,
+		email: req.body.email,
+		photo: req.body.photo,
+	};
+	const updatedUser = await User.findByIdAndUpdate(
+		user,
+		allowedUpdates,
+		{
+			runValidators: true,
+			new: true,
+		}
+	);
+	res.status(200).json({
+		status: "success",
+		updatedUser,
+	});
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+	const { user } = req;
+	await User.findByIdAndUpdate(user.id, { active: false });
+	res.status(204).json();
 });
