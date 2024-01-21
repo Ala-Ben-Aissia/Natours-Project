@@ -29,6 +29,12 @@ exports.createReview = catchAsync(async (req, res, next) => {
 	const tour = await Tour.findById(tourId);
 	if (!user) return next(new AppError("Login to review..", 401));
 	if (!tour) return next(new AppError("Tour not found..", 403));
+	// const hasReviewed = await Review.findOne({
+	// 	reviewer: user.id,
+	// 	tour: tourId,
+	// });
+	// if (hasReviewed)
+	// 	return next(new AppError("Cannot review more than once!"));
 	const review = await Review.create({
 		reviewer: user.id,
 		tour: tourId,

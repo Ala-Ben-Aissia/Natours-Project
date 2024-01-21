@@ -149,7 +149,8 @@ tourSchema.virtual("reviews", {
 //? Geospatial indexes
 // https://www.mongodb.com/docs/manual/core/indexes/index-types/geospatial/2dsphere/#std-label-2dsphere-index
 tourSchema.index({ startLocation: "2dsphere" });
-//? Compound indexes
+//? Compound indexes (sort order)
+// https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/sort-order/#compound-index-sort-order
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 
 //* manage indexing

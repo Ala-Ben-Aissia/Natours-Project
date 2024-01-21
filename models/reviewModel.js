@@ -34,6 +34,10 @@ const reviewSchema = new mongoose.Schema(
 	}
 );
 
+//? Compound indexes (unique) ≈ Django's unique_together
+// https://www.mongodb.com/docs/manual/core/index-unique/#unique-compound-index
+reviewSchema.index({ tour: 1, reviewer: 1 }, { unique: true });
+
 reviewSchema.statics.calcAvgRating = async function (tourId) {
 	// this === Review
 	const tourStats = await Review.aggregate([
@@ -56,7 +60,6 @@ reviewSchema.statics.calcAvgRating = async function (tourId) {
 			},
 		},
 	]);
-	console.log(tourStats);
 	const numRating = tourStats[0]?.numRating ?? 0; // 0 by default
 	const avgRating = tourStats[0]?.avgRating; // delete from db if 0 reviews
 	// if (!avgRating) or if (numRating === 0):
