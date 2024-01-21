@@ -10,10 +10,7 @@ const {
 
 exports.getAllTours = getAllDocs(Tour);
 
-exports.getTour = getDoc(Tour, {
-	path: "reviews",
-	select: "-__v",
-});
+exports.getTour = getDoc(Tour, { path: "reviews" });
 
 exports.AddTour = createDoc(Tour);
 exports.updateTour = updateDoc(Tour);

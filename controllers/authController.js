@@ -12,7 +12,7 @@ const sendNewJWT = (res, user, code) => {
 	const token = jwt.sign(payload, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
 	});
-	user.password = undefined; // remove password only from input (without saved)
+	user.password = undefined; // remove password only from output (without saved)
 	res.status(code).json({
 		status: "success",
 		token,

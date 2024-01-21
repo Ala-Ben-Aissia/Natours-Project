@@ -38,6 +38,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
 	const review = await Review.create({
 		reviewer: user.id,
 		tour: tourId,
+		review: req.body.review,
 		rating: req.body.rating,
 	});
 	review.__v = undefined;
