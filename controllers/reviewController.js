@@ -1,16 +1,17 @@
 const Review = require("../models/reviewModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
-const User = require("../models/userModel");
 const Tour = require("../models/tourModel");
+const { getDoc, updateDoc, deleteDoc } = require("../utils/docCRUD");
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
 	const tourId = req.params?.tourId ?? req.body?.tour;
 	const tour = await Tour.findById(tourId);
-	if (!tour) return next(new AppError("Tour not found", 400));
 	const reviews = await Review.find({
 		tour: tourId,
-	});
+	}).select("-__v");
+	if (!tour) return next(new AppError("Tour not found", 400));
+
 	res.status(200).json({
 		status: "success",
 		results: reviews.length,
@@ -20,14 +21,20 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 	});
 });
 
+exports.getReview = getDoc(Review);
+
 exports.createReview = catchAsync(async (req, res, next) => {
-	const userId = req.user?.id ?? req.body?.reviewer;
+	const { user } = req;
 	const tourId = req.params?.tourId ?? req.body?.tour;
-	const reviewer = await User.findById(userId);
 	const tour = await Tour.findById(tourId);
-	if (!reviewer) return next(new AppError("User not found..", 403));
+	if (!user) return next(new AppError("Login to review..", 401));
 	if (!tour) return next(new AppError("Tour not found..", 403));
-	const review = await Review.create(req.body);
+	const review = await Review.create({
+		reviewer: user.id,
+		tour: tourId,
+		rating: req.body.rating,
+	});
+	review.__v = undefined;
 	res.status(201).json({
 		status: "success",
 		data: {
@@ -35,3 +42,6 @@ exports.createReview = catchAsync(async (req, res, next) => {
 		},
 	});
 });
+
+exports.updateReview = updateDoc(Review);
+exports.deleteReview = deleteDoc(Review);

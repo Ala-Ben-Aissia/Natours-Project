@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const User = require("../models/userModel");
 const Tour = require("../models/tourModel");
+const Review = require("../models/reviewModel");
 
 // const tours = JSON.parse(
 // 	await fs.promises.readFile(
@@ -45,5 +46,6 @@ const [action, data] = process.argv[2]?.split("--") ?? [0, 0];
 if (action === "import") {
 	if (data === "tours") importData(Tour);
 	if (data === "users") importData(User);
+	if (data === "reviews") importData(Review);
 }
 module.exports = importData;

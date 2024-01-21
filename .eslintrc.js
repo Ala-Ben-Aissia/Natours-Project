@@ -25,5 +25,6 @@ module.exports = {
 		"no-useless-escape": "off",
 		"no-console": "warn",
 		"no-empty": "warn",
+		"no-mixed-spaces-and-tabs:": "smart-tabs",
 	},
 };

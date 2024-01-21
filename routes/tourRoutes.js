@@ -3,6 +3,9 @@ const tourController = require("../controllers/tourController");
 const authController = require("../controllers/authController");
 
 const toursRouter = express.Router();
+const reviewRouter = require("./reviewRoutes");
+
+toursRouter.use("/:tourId/reviews", reviewRouter);
 
 toursRouter
 	.route("/distances/coords/:coords/unit/:unit")

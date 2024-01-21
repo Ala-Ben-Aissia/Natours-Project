@@ -1,4 +1,3 @@
-const User = require("../models/userModel");
 const AppError = require("./appError");
 const catchAsync = require("./catchAsync");
 const queryAPI = require("../utils/queryAPI");
@@ -19,9 +18,13 @@ exports.getAllDocs = (Model) =>
 		});
 	});
 
-exports.getDoc = (Model) =>
+exports.getDoc = (Model, populateOption) =>
 	catchAsync(async (req, res, next) => {
-		const doc = await Model.findById(req.params.id);
+		const doc = populateOption
+			? await Model.findById(req.params.id).populate(
+					populateOption
+			  )
+			: await Model.findById(req.params.id);
 		if (!doc) return next(new AppError("Invalid doc ID", 404));
 		return res.status(200).json({
 			status: "success",

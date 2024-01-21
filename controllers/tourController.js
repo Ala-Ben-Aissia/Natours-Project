@@ -1,5 +1,4 @@
 const Tour = require("../models/tourModel");
-const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const {
 	getAllDocs,
@@ -11,7 +10,11 @@ const {
 
 exports.getAllTours = getAllDocs(Tour);
 
-exports.getTour = getDoc(Tour);
+exports.getTour = getDoc(Tour, {
+	path: "reviews",
+	select: "-__v",
+});
+
 exports.AddTour = createDoc(Tour);
 exports.updateTour = updateDoc(Tour);
 exports.deleteTour = deleteDoc(Tour);

@@ -40,9 +40,13 @@ const tourSchema = new mongoose.Schema(
 		},
 		ratingsAverage: {
 			type: Number,
-			default: 4.5,
+			// default: 4.5,
 			max: [5, "ratingsAverage must be at most 5"],
 			min: [1, "ratingsAverage must be at least 1"],
+			// set: (val) => {
+			// 	console.log(val);
+			// 	return val.toFixed(1);
+			// },
 		},
 		ratingsQuantity: {
 			type: Number,
@@ -111,6 +115,12 @@ const tourSchema = new mongoose.Schema(
 				ref: "User",
 			},
 		],
+		// reviews: [
+		// 	{
+		// 		type: mongoose.SchemaTypes.ObjectId,
+		// 		ref: "Review",
+		// 	},
+		// ],
 	},
 	{
 		toJSON: { virtuals: true },
@@ -119,6 +129,13 @@ const tourSchema = new mongoose.Schema(
 	// make sure virtual properties are included when converting the document to an object or JSON.
 	// this allows the virtual properties to be properly displayed in the outputs
 );
+
+tourSchema.virtual("reviews", {
+	ref: "Review",
+	foreignField: "tour",
+	localField: "_id",
+});
+//HACK: this is used to prevent tours from having unlimited amount of reviews that may be heavy on the db
 
 //NOTE: Always follow the fat model thin controllers paradigm (MVC)
 
@@ -160,10 +177,12 @@ tourSchema.pre(/^find/, function (next) {
 	// by default vip is set to false in the schema BUT this does not create a vip field in the db
 	// => it's a mongoose thing..
 	// when creating a new tour with vip set to true, the vip fieldwill be saved in the db which makes ("vip": true) work.
-	this.find({ vip: { $ne: true } }).populate({
-		path: "guides",
-		select: "username role",
-	});
+	this.find({ vip: { $ne: true } })
+		.select("-__v")
+		.populate({
+			path: "guides",
+			select: "username role",
+		});
 	next();
 });
 
