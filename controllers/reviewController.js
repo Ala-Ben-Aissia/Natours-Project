@@ -50,5 +50,33 @@ exports.createReview = catchAsync(async (req, res, next) => {
 	});
 });
 
-exports.updateReview = updateDoc(Review);
-exports.deleteReview = deleteDoc(Review);
+exports.updateReview = catchAsync(async (req, res, next) => {
+	const review = await Review.findById(req.params.id);
+	if (!review) return next(new AppError("Review not found", 404));
+	const userId = req.user.id;
+	const reviewerId = review.reviewer.id;
+	if (userId !== reviewerId)
+		return next(
+			new AppError("You do not have permission ;)", 403)
+		);
+	const updatedReview = await Review.findByIdAndUpdate(
+		req.params.id,
+		req.body,
+		{ runValidators: true, new: true }
+	);
+	res.status(200).json({
+		review: updatedReview,
+	});
+});
+exports.deleteReview = catchAsync(async (req, res, next) => {
+	const review = await Review.findById(req.params.id);
+	if (!review) return next(new AppError("Review not found", 404));
+	const userId = req.user.id;
+	const reviewerId = review.reviewer.id;
+	if (userId !== reviewerId)
+		return next(
+			new AppError("You do not have permission ;)", 403)
+		);
+	await Review.findByIdAndDelete(req.params.id);
+	res.status(204).json();
+});
