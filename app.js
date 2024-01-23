@@ -19,7 +19,7 @@ app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/reviews", reviewRouter);
-// handle unknown routes
+// handle unknown routes`
 app.use("*", (req, res, next) => {
 	return next(new AppError(`Cannot find ${req.originalUrl}`, 404));
 });
