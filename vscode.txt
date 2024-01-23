@@ -1,0 +1,123 @@
+{
+	"editor.accessibilitySupport": "off",
+	"editor.bracketPairColorization.enabled": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "explicit"
+	},
+	"editor.maxTokenizationLineLength": 2500,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"eslint.format.enable": true,
+	"editor.linkedEditing": true,
+	"editor.minimap.enabled": false,
+	"editor.wordWrap": "bounded",
+	"extensions.ignoreRecommendations": true,
+	"git.confirmSync": false,
+	"http.proxyAuthorization": null,
+	"liveServer.settings.donotShowInfoMsg": true,
+	"liveServer.settings.donotVerifyTags": true,
+	"markdown.updateLinksOnFileMove.enabled": "always",
+	"terminal.integrated.fontFamily": "MesloLGS NF",
+	"workbench.colorCustomizations": {
+		// "editor.background": "#222225",
+		"statusBar.background": "#1e1e20",
+		"statusBar.noFolderBackground": "#313134",
+		"statusBar.debuggingBackground": "#511f1f"
+	},
+	"[markdown]": {
+		"editor.unicodeHighlight.ambiguousCharacters": false,
+		"editor.unicodeHighlight.invisibleCharacters": false,
+		"diffEditor.ignoreTrimWhitespace": false,
+		"editor.quickSuggestions": {
+			"comments": "off",
+			"strings": "off",
+			"other": "off"
+		}
+	},
+	"terminal.integrated.env.osx": {},
+	"editor.wordWrapColumn": 100,
+	"editor.stickyTabStops": true,
+	"prettier.useTabs": true,
+	"prettier.tabWidth": 4,
+	"prettier.printWidth": 70,
+	"workbench.editorAssociations": {
+		"*.csv": "default",
+		"*.png": "imagePreview.previewEditor"
+	},
+	"javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+	"workbench.colorTheme": "Default Dark+",
+	"workbench.iconTheme": "material-icon-theme",
+	"better-comments.multilineComments": true,
+	"better-comments.tags": [
+		{
+			"tag": "!",
+			"color": "#CD1C00",
+			"strikethrough": false,
+			"backgroundColor": "transparent"
+		},
+		{
+			"tag": "?",
+			"color": "#3498DB",
+			"strikethrough": false,
+			"backgroundColor": "transparent"
+		},
+		{
+			"tag": "*",
+			"color": "#15a368",
+			"strikethrough": false,
+			"backgroundColor": "transparent"
+		},
+		{
+			"tag": "~",
+			"color": "#8940E7",
+			"strikethrough": false,
+			"backgroundColor": "transparent"
+		}
+	],
+	"todohighlight.defaultStyle": {
+		"color": "white",
+		"borderRadius": "2.7px"
+	},
+	"todohighlight.keywords": [
+		{
+			"text": "//TODO:",
+			"backgroundColor": "#FF8C00"
+		},
+		{
+			"text": "//TASK:",
+			"backgroundColor": "#15a368"
+		},
+		{
+			"text": "//NOTE:",
+			"backgroundColor": "#3498DB"
+		},
+		{
+			"text": "//HACK:",
+			"backgroundColor": "#8940E7"
+		},
+		{
+			"text": "//FIXME:",
+			"backgroundColor": "#f06291"
+		},
+		{
+			"text": "//CAREFUL:",
+			"backgroundColor": "#CD1C00"
+		}
+	],
+	"editor.formatOnSave": true,
+	"eslint.timeBudget.onValidation": {
+		"warn": 4000,
+		"error": 8000
+	},
+	"editor.unicodeHighlight.allowedCharacters": {
+		"’": true
+	},
+	"window.newWindowDimensions": "fullscreen",
+	"extensions.experimental.affinity": {
+		"asvetliakov.vscode-neovim": 1
+	},
+	"editor.cursorWidth": 5,
+	"workbench.editor.highlightModifiedTabs": true,
+	"workbench.editor.limit.perEditorGroup": true,
+	"workbench.editor.limit.enabled": true,
+	"window.zoomLevel": 1
+}
