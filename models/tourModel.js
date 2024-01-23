@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { default: slugify } = require("slugify");
 const { durationConverter } = require("../utils/durationConverter");
-const User = require("../models/userModel.js");
 
 const tourSchema = new mongoose.Schema(
 	{
