@@ -1,5 +1,3 @@
-const { off } = require("./models/userModel");
-
 module.exports = {
 	env: {
 		browser: true,
@@ -19,12 +17,11 @@ module.exports = {
 		"no-unused-vars": "off",
 		// "no-unused-vars": [
 		// 	"warn",
-		// 	{ argsIgnorePattern: "req|res|next|val" },
+		// 	{ argsIgnorePattern: "req|res|next|val|_" },
 		// ],
 		"no-undef": "error",
 		"no-useless-escape": "off",
 		"no-console": "warn",
 		"no-empty": "warn",
-		"no-mixed-spaces-and-tabs:": "smart-tabs",
 	},
 };
