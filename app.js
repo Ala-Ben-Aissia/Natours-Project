@@ -2,6 +2,7 @@ const express = require("express");
 const { toursRouter } = require("./routes/tourRoutes");
 const globalErrorHandler = require("./utils/globalErrorHandler");
 const morgan = require("morgan");
+require("dotenv").config();
 const userRouter = require("./routes/userRoutes");
 const authRouter = require("./routes/authRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
@@ -10,6 +11,7 @@ const { default: rateLimit } = require("express-rate-limit");
 const { default: helmet } = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const hpp = require("hpp");
+const path = require("path");
 
 const app = express();
 
@@ -45,7 +47,18 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 // Logger middleware
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+	app.use(morgan("dev"));
+}
+// serving static files
+app.use(express.static(path.join(__dirname, "public")));
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+app.get("/", (req, res) => {
+	res.status(200).render("base");
+});
 
 app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
