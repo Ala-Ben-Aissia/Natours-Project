@@ -57,7 +57,10 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
 app.get("/", (req, res) => {
-	res.status(200).render("base");
+	res.status(200).render("base", {
+		tour: "The Forest Hiker",
+		user: "Ala",
+	});
 });
 
 app.use("/api/v1/tours", toursRouter);

@@ -3,9 +3,14 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Natours
+        title Natours | #{tour}
         link(rel="stylesheet", href="css/style.css")
         link(rel="shortcut icon", href="img/favicon.png", type="image/x-icon")
     body 
-        h1 The Park Camper
-        p This is a paragraph
+        h1= tour
+        h2= user.toUpperCase()
+        //- "=" then "js"
+        p This is a paragraph 
+        - const x = 9;
+        //- "-" then unbuffered code (won't compile)
+        h2=x * 3
