@@ -23,18 +23,18 @@ app.use(helmet());
 app.use(mongoSanitize());
 
 // prevent params pollution
-// app.use(
-// 	hpp({
-// 		whitelist: [
-// 			"duration",
-// 			"ratingsQuantity",
-// 			"ratingsAverage",
-// 			"difficulty",
-// 			"price",
-// 		],
-// 		// fileds that are allowed to be used multiple times in querying(params)
-// 	})
-// );
+app.use(
+	hpp({
+		whitelist: [
+			"duration",
+			"ratingsQuantity",
+			"ratingsAverage",
+			"difficulty",
+			"price",
+		],
+		// fileds that are allowed to be used multiple times in querying(params)
+	})
+);
 
 // limit requests rate(throttling)
 const limiter = rateLimit({
