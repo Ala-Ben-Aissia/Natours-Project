@@ -1,3 +1,11 @@
+block append head 
+   link(rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="")
+   script(defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin="") 
 mixin overviewBox(icon, label, text)
    .overview-box__detail
       svg.overview-box__icon
@@ -54,7 +62,7 @@ section.section-pictures
          img.picture-box__img(class =` picture-box__img--${i}` src=`/img/tours/${image}`, alt=`${tour.name} ${i}`)
 
 section.section-map
-   #map
+   #map(data-locations=`${JSON.stringify(tour.locations)}`)
 
 section.section-reviews
    .reviews

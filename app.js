@@ -20,7 +20,7 @@ const app = express();
 app.use(express.json());
 
 // helmet (setting HTTP response headers)
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // data sanitization against NoSQL query injection
 app.use(mongoSanitize());
