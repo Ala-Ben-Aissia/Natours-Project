@@ -12,6 +12,7 @@ const { default: helmet } = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const hpp = require("hpp");
 const path = require("path");
+const viewRouter = require("./routes/viewRoutes");
 
 const app = express();
 
@@ -26,29 +27,29 @@ app.use(mongoSanitize());
 
 // prevent params pollution
 app.use(
-	hpp({
-		whitelist: [
-			"duration",
-			"ratingsQuantity",
-			"ratingsAverage",
-			"difficulty",
-			"price",
-		],
-		// fileds that are allowed to be used multiple times in querying(params)
-	})
+   hpp({
+      whitelist: [
+         "duration",
+         "ratingsQuantity",
+         "ratingsAverage",
+         "difficulty",
+         "price",
+      ],
+      // fileds that are allowed to be used multiple times in querying(params)
+   })
 );
 
 // limit requests rate(throttling)
 const limiter = rateLimit({
-	limit: 100, // default to 5
-	windowMs: 60 * 60 * 1000, // 100 requests per hour
-	message: `Too many requests, please try again after 1 hour !`,
+   limit: 100, // default to 5
+   windowMs: 60 * 60 * 1000, // 100 requests per hour
+   message: `Too many requests, please try again after 1 hour !`,
 });
 app.use("/api", limiter);
 
 // Logger middleware
 if (process.env.NODE_ENV === "development") {
-	app.use(morgan("dev"));
+   app.use(morgan("dev"));
 }
 // serving static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -56,32 +57,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
-app.get("/", (req, res) => {
-	res.status(200).render("base", {
-		tour: "The Forest Hiker",
-		user: "Ala",
-	});
-});
-
-app.get("/overview", (req, res) => {
-	res.status(200).render("overview", {
-		title: "All Tours",
-	});
-});
-
-app.get("/tour", (req, res) => {
-	res.status(200).render("tour", {
-		title: "The Forest Hiker Tour",
-	});
-});
-
+app.use("/", viewRouter);
 app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/reviews", reviewRouter);
 // handle unknown routes`
 app.use("*", (req, res, next) => {
-	return next(new AppError(`Cannot find ${req.originalUrl}`, 404));
+   return next(new AppError(`Cannot find ${req.originalUrl}`, 404));
 });
 
 // Global Error Handling
