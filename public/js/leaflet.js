@@ -29,10 +29,12 @@ document.addEventListener("DOMContentLoaded", function () {
                // autoClose: false,
                closeOnClick: false,
                // className: "mapboxgl-popup",
-               autoPan: true,
+               // autoPan: true,
             })
          )
-         .setPopupContent(`<h1>${i + 1}. ${loc.description}</h1>`);
+         .setPopupContent(
+            `<h1>DAY ${loc.day}: ${loc.description}</h1>`
+         );
       if (i === 0) x.openPopup();
    });
 });
