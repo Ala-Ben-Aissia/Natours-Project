@@ -13,11 +13,14 @@ const mongoSanitize = require("express-mongo-sanitize");
 const hpp = require("hpp");
 const path = require("path");
 const viewRouter = require("./routes/viewRoutes");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
 // Body Parser
 app.use(express.json());
+// Cookie-Parser
+app.use(cookieParser());
 
 // helmet (setting HTTP response headers)
 app.use(helmet({ contentSecurityPolicy: false }));
