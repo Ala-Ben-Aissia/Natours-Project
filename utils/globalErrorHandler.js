@@ -12,8 +12,8 @@ const handleErrorsDev = (err, req, res) => {
            stack: err.stack,
         })
       : // Rendered Error (WEBSITE)
-        res.status(err.statusCode).render("error", {
-           title: "",
+        res.status(err.statusCode ?? 500).render("error", {
+           title: "An Error Has Occured!",
            msg: err.message,
         });
 };

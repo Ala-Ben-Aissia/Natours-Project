@@ -4,6 +4,12 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
+router.post(
+   "/update-settings",
+   authController.protect,
+   viewController.updateSettings
+);
+
 router.get("/me", authController.protect, viewController.getProfile);
 
 router.use(authController.isLoggedIn);

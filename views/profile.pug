@@ -25,13 +25,13 @@ block content
       .user-view__content
         .user-view__form-container
           h2.heading-secondary.ma-bt-md Your account settings
-          form.form.form-user-data
+          form.form.form-user-data(method="POST" action="/update-settings")
             .form__group
               label.form__label(for='name') Name
-              input#name.form__input(type='text', value=user.username, required)
+              input#name.form__input(type='text', value=user.username, required, name="usernameX")
             .form__group.ma-bt-md
               label.form__label(for='email') Email address
-              input#email.form__input(type='email', value=user.email, required)
+              input#email.form__input(type='email', value=user.email, required, name="emailX")
             .form__group.form__photo-upload
               if user.photo
                 img.form__user-photo(src=`/img/users/${user.photo}`)

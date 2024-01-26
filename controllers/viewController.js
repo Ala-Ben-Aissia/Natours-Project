@@ -1,16 +1,17 @@
 const Tour = require("../models/tourModel");
+const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
-exports.getOverview = catchAsync(async (req, res, next) => {
+exports.getOverview = async (req, res, next) => {
    const tours = await Tour.find();
    res.status(200).render("overview", {
       title: "All tours",
       tours,
    });
-});
+};
 
-exports.getTour = catchAsync(async (req, res, next) => {
+exports.getTour = async (req, res, next) => {
    const { slug } = req.params;
    const tour = await Tour.findOne({ slug }).populate({
       path: "reviews",
@@ -21,12 +22,33 @@ exports.getTour = catchAsync(async (req, res, next) => {
       title: tour.name,
       tour,
    });
-});
+};
 
-exports.getLoginForm = catchAsync(async (req, res, next) => {
+exports.getLoginForm = async (req, res, next) => {
    res.status(200).render("login");
-});
+};
 
-exports.getProfile = catchAsync(async (req, res, next) => {
+exports.getProfile = async (req, res, next) => {
    res.status(200).render("profile");
+};
+
+exports.updateSettings = catchAsync(async (req, res, next) => {
+   const { user } = req;
+   const { usernameX, emailX } = req.body;
+   const updatedUser = await User.findByIdAndUpdate(
+      user.id,
+      {
+         username: usernameX, // name attribute (html pug)
+         email: emailX,
+      },
+      {
+         runValidators: true,
+         new: true,
+      }
+   );
+   // passwords are handled seperatly
+   // findByIdAndUpdate won't trigger the save middleware (to hash pwds when saved into the db)
+   res.status(200).render("profile", {
+      user: updatedUser,
+   });
 });

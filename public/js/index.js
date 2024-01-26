@@ -4,7 +4,7 @@ import { logout } from "./logout";
 
 // DOM Elements
 const map = document.getElementById("map");
-const loginForm = document.querySelector(".form");
+const loginForm = document.querySelector(".form--login");
 const logoutBtn = document.querySelector(".nav__el--logout");
 
 // Delegation
