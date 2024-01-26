@@ -64,7 +64,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       return next(new AppError("Login to grant access", 403));
    }
    const token =
-      req.headers?.authorization?.split(" ") ?? req.cookies.jwt;
+      req.headers?.authorization?.split(" ")[1] ?? req.cookies.jwt;
    // verify signature (checking if jwt has been changed by any malicious 3rd party..)
    const payload = await promisify(jwt.verify).call(
       null,
@@ -85,6 +85,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       return next(new AppError("User must login again!", 401));
    }
    req.user = user;
+   res.locals.user = user;
    next();
 });
 

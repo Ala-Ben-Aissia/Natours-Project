@@ -4,7 +4,10 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
+router.get("/me", authController.protect, viewController.getProfile);
+
 router.use(authController.isLoggedIn);
+// set user to be used in the .pug files (res.locals.user = user;)
 
 router.get("/", viewController.getOverview);
 
