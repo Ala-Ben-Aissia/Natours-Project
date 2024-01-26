@@ -1,4 +1,5 @@
 const Tour = require("../models/tourModel");
+const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
 exports.getOverview = catchAsync(async (req, res, next) => {
@@ -15,6 +16,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
       path: "reviews",
       select: "-tour reviewer review rating",
    });
+   if (!tour) return next(new AppError("Tour doesn't exist!", 404));
    res.status(200).render("tour", {
       title: tour.name,
       tour,

@@ -581,22 +581,25 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"gnfYV":[function(require,module,exports) {
 var _leaflet = require("./leaflet");
 var _login = require("./login");
+var _logout = require("./logout");
 // DOM Elements
 const map = document.getElementById("map");
 const loginForm = document.querySelector(".form");
+const logoutBtn = document.querySelector(".nav__el--logout");
 // Delegation
 if (map) {
     const locations = JSON.parse(map.dataset.locations);
     (0, _leaflet.displayMap)(locations);
 }
-if (loginForm) loginForm.addEventListener("submit", async (e)=>{
+if (loginForm) loginForm.addEventListener("submit", (e)=>{
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    await (0, _login.login)(email, password);
+    (0, _login.login)(email, password);
 });
+if (logoutBtn) logoutBtn.addEventListener("click", (0, _logout.logout));
 
-},{"./leaflet":"kmUTu","./login":"5jg8a"}],"kmUTu":[function(require,module,exports) {
+},{"./leaflet":"kmUTu","./login":"5jg8a","./logout":"elpbc"}],"kmUTu":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "displayMap", ()=>displayMap);
@@ -11268,6 +11271,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alerts = require("./alerts");
 const login = async (email, password)=>{
     try {
         const res = await (0, _axiosDefault.default)({
@@ -11280,16 +11284,16 @@ const login = async (email, password)=>{
         });
         // console.log(res);
         // res.data => API json response
-        if (res.data.status === "success") window.setTimeout(()=>{
-            // alert("Logged in successfully");
+        if (res.data.status === "success") {
+            (0, _alerts.showAlert)("success", "Logged in successfully!");
             location.assign("/"); // navigate to
-        });
+        }
     } catch (err) {
-        alert(err.response.data.message);
+        (0, _alerts.showAlert)("error", err.response.data.message);
     }
 };
 
-},{"axios":"atfHC","@parcel/transformer-js/src/esmodule-helpers.js":"dkje0"}],"atfHC":[function(require,module,exports) {
+},{"axios":"atfHC","@parcel/transformer-js/src/esmodule-helpers.js":"dkje0","./alerts":"lpv2Q"}],"atfHC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _axiosJsDefault.default));
@@ -15664,5 +15668,44 @@ Object.entries(HttpStatusCode).forEach(([key, value])=>{
 });
 exports.default = HttpStatusCode;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"dkje0"}]},["gGyvL","gnfYV"], "gnfYV", "parcelRequire2aee")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"dkje0"}],"lpv2Q":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "hideAlert", ()=>hideAlert);
+parcelHelpers.export(exports, "showAlert", ()=>showAlert);
+const hideAlert = ()=>{
+    const alert = document.querySelector(".alert");
+    if (alert) alert.remove();
+};
+const showAlert = (type, msg)=>{
+    hideAlert(); // always one alert at a time
+    const markup = `<div class="alert alert--${type}">${msg}</div>`;
+    document.querySelector("body").insertAdjacentHTML("afterbegin", markup);
+    window.setTimeout(()=>hideAlert(), 3000);
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"dkje0"}],"elpbc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "logout", ()=>logout);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alerts = require("./alerts");
+const logout = async ()=>{
+    try {
+        const res = await (0, _axiosDefault.default)({
+            method: "GET",
+            url: "/api/v1/auth/logout"
+        });
+        if (res.data.status === "success") {
+            (0, _alerts.showAlert)("success", "Logged out successfully!");
+            // location.reload(true); // use true to bypass cache
+            location.assign("/");
+        }
+    } catch (err) {
+        (0, _alerts.showAlert)("error", "An Error Occured!");
+    }
+};
+
+},{"axios":"atfHC","./alerts":"lpv2Q","@parcel/transformer-js/src/esmodule-helpers.js":"dkje0"}]},["gGyvL","gnfYV"], "gnfYV", "parcelRequire2aee")
 

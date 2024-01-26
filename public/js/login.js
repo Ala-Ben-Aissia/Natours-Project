@@ -1,4 +1,6 @@
 import axios from "axios";
+import { showAlert } from "./alerts";
+
 export const login = async (email, password) => {
    try {
       const res = await axios({
@@ -12,12 +14,10 @@ export const login = async (email, password) => {
       // console.log(res);
       // res.data => API json response
       if (res.data.status === "success") {
-         window.setTimeout(() => {
-            // alert("Logged in successfully");
-            location.assign("/"); // navigate to
-         });
+         showAlert("success", "Logged in successfully!");
+         location.assign("/"); // navigate to
       }
    } catch (err) {
-      alert(err.response.data.message);
+      showAlert("error", err.response.data.message);
    }
 };

@@ -17,7 +17,7 @@ const sendNewJWT = (res, user, code) => {
          Date.now() +
             process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
       ),
-      httpOnly: true,
+      httpOnly: true, // cookie cannot be manipulated from the browser
    };
    if (process.env.NODE_ENV === "production")
       cookieOptions.secure = true;
@@ -230,4 +230,9 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
    // pass user to pug
    res.locals.user = user;
    next();
+});
+
+exports.logout = catchAsync(async (req, res, next) => {
+   res.cookie("jwt", "", { maxAge: 10 * 1000, httpOnly: true });
+   res.status(200).json({ status: "success" });
 });
