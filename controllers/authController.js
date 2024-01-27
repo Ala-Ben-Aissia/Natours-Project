@@ -6,6 +6,34 @@ const { promisify } = require("util");
 const validator = require("validator");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+const multer = require("multer");
+
+// https://www.npmjs.com/package/multer#storage
+const multerStorage = multer.diskStorage({
+   destination: (req, file, cb) => {
+      cb(null, "public/img/users");
+   },
+   filename: (req, file, cb) => {
+      const [_, extension] = file.mimetype.split("/");
+      const uniqueSuffix = `${
+         req.user.id
+      }-${Date.now()}.${extension}`;
+      cb(null, `user-${uniqueSuffix}`);
+   },
+});
+
+// filtering only images
+const multerFilter = (req, file, cb) => {
+   if (file.mimetype.startsWith("image")) cb(null, true);
+   else cb(new AppError("Only images are allowed!", 404), false);
+};
+
+const upload = multer({
+   storage: multerStorage,
+   fileFilter: multerFilter,
+});
+
+exports.uploadUserPhoto = upload.single("photo");
 
 const sendNewJWT = (res, user, code) => {
    const payload = { id: user.id };
@@ -188,7 +216,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
    const allowedUpdates = {
       username: req.body.username,
       email: req.body.email,
-      photo: req.body.photo,
+      photo: req.file?.filename,
    };
    const updatedUser = await User.findByIdAndUpdate(
       user,

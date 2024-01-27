@@ -29,6 +29,7 @@ authRouter.get("/me", authController.getMe, userController.getUser);
 
 authRouter.patch(
    "/update-me",
+   authController.uploadUserPhoto,
    authController.getMe,
    authController.updateMe
 );
