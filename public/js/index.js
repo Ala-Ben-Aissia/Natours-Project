@@ -1,11 +1,13 @@
 import { displayMap } from "./leaflet";
 import { login } from "./login";
 import { logout } from "./logout";
+import { updateUserData } from "./settings";
 
 // DOM Elements
 const map = document.getElementById("map");
 const loginForm = document.querySelector(".form--login");
 const logoutBtn = document.querySelector(".nav__el--logout");
+const userDataForm = document.querySelector(".form-user-data");
 
 // Delegation
 if (map) {
@@ -24,4 +26,13 @@ if (loginForm) {
 
 if (logoutBtn) {
    logoutBtn.addEventListener("click", logout);
+}
+
+if (userDataForm) {
+   userDataForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("name").value;
+      const email = document.querySelector("#email").value;
+      updateUserData(username, email);
+   });
 }
