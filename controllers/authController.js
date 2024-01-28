@@ -7,22 +7,26 @@ const validator = require("validator");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const multer = require("multer");
+const sharp = require("sharp");
 
 // https://www.npmjs.com/package/multer#storage
-const multerStorage = multer.diskStorage({
-   destination: (req, file, cb) => {
-      cb(null, "public/img/users");
-   },
-   filename: (req, file, cb) => {
-      const [_, extension] = file.mimetype.split("/");
-      const uniqueSuffix = `${
-         req.user.id
-      }-${Date.now()}.${extension}`;
-      cb(null, `user-${uniqueSuffix}`);
-   },
-});
+// const multerStorage = multer.diskStorage({
+//    destination: (req, file, cb) => {
+//       cb(null, "public/img/users");
+//    },
+//    filename: (req, file, cb) => {
+//       const [_, extension] = file.mimetype.split("/");
+//       const uniqueSuffix = `${
+//          req.user.id
+//       }-${Date.now()}.${extension}`;
+//       cb(null, `user-${uniqueSuffix}`);
+//    },
+// });
 
-// filtering only images
+const multerStorage = multer.memoryStorage();
+//NOTE: memoryStorage returns a buffer (not like diskStorage) & it is used in case of image processing (if not just use diskStorage)
+
+// accept only images
 const multerFilter = (req, file, cb) => {
    if (file.mimetype.startsWith("image")) cb(null, true);
    else cb(new AppError("Only images are allowed!", 404), false);
@@ -34,6 +38,23 @@ const upload = multer({
 });
 
 exports.uploadUserPhoto = upload.single("photo");
+
+exports.resizeUserPhoto = async (req, res, next) => {
+   if (!req.file) return next();
+   const uniqueSuffix = `${req.user.id}-${Date.now()}.jpeg`;
+   // set filename property to the file to be used in the next middleware (updateMe)
+   req.file.filename = `user-${uniqueSuffix}`;
+   await sharp(req.file.buffer)
+      .resize({
+         width: 500,
+         height: 500,
+         // fit: "fill"
+      })
+      .toFormat("jpeg")
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/users/${req.file.filename}`);
+   next();
+};
 
 const sendNewJWT = (res, user, code) => {
    const payload = { id: user.id };
