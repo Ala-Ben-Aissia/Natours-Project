@@ -36,9 +36,15 @@ if (logoutBtn) {
 if (userDataForm) {
    userDataForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+      const form = new FormData();
       const username = document.getElementById("name").value;
-      const email = document.querySelector("#email").value;
-      await updateUserData({ username, email }, "data");
+      const email = document.getElementById("email").value;
+      const photo = document.getElementById("photo").files[0];
+      form.append("username", username);
+      form.append("email", email);
+      form.append("photo", photo);
+      await updateUserData(form, "data");
    });
 }
 if (userPasswordForm) {

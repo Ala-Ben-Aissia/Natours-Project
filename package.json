@@ -11,7 +11,7 @@
       "start": "node --watch server.js",
       "start-prod": "NODE_ENV=production node --watch server.js",
       "debug": "node --inspect-brk server.js",
-      "watch:js": "parcel watch ./public/js/index.js --dist-dir ./public/js/bundle --no-source-maps",
+      "watch:js": "rm -rf .parcel-cache && parcel watch ./public/js/index.js --dist-dir ./public/js/bundle --no-source-maps",
       "build:js": "parcel build --no-source-maps"
    },
    "keywords": [],
@@ -40,8 +40,19 @@
       "validator": "^13.11.0"
    },
    "devDependencies": {
+      "assert": "^2.1.0",
       "buffer": "^6.0.3",
+      "crypto-browserify": "^3.12.0",
       "eslint": "^8.56.0",
-      "parcel": "^2.11.0"
+      "events": "^3.3.0",
+      "os-browserify": "^0.3.0",
+      "parcel": "^2.11.0",
+      "path-browserify": "^1.0.1",
+      "process": "^0.11.10",
+      "punycode": "^1.4.1",
+      "stream-browserify": "^3.0.0",
+      "string_decoder": "^1.3.0",
+      "url": "^0.11.3",
+      "util": "^0.12.5"
    }
 }
