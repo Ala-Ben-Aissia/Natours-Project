@@ -588,23 +588,42 @@ const map = document.getElementById("map");
 const loginForm = document.querySelector(".form--login");
 const logoutBtn = document.querySelector(".nav__el--logout");
 const userDataForm = document.querySelector(".form-user-data");
+const userPasswordForm = document.querySelector(".form-user-password");
 // Delegation
 if (map) {
     const locations = JSON.parse(map.dataset.locations);
     (0, _leaflet.displayMap)(locations);
 }
-if (loginForm) loginForm.addEventListener("submit", (e)=>{
+if (loginForm) loginForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    (0, _login.login)(email, password);
+    await (0, _login.login)(email, password);
 });
-if (logoutBtn) logoutBtn.addEventListener("click", (0, _logout.logout));
-if (userDataForm) userDataForm.addEventListener("submit", (e)=>{
+if (logoutBtn) logoutBtn.addEventListener("click", async ()=>{
+    await (0, _logout.logout)();
+});
+if (userDataForm) userDataForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
     const username = document.getElementById("name").value;
     const email = document.querySelector("#email").value;
-    (0, _settings.updateUserData)(username, email);
+    await (0, _settings.updateUserData)({
+        username,
+        email
+    }, "data");
+});
+if (userPasswordForm) userPasswordForm.addEventListener("submit", async (e)=>{
+    document.querySelector(".btn--save-password").textContent = "updating..";
+    e.preventDefault();
+    const currentPassword = document.getElementById("password-current").value;
+    const newPassword = document.getElementById("password").value;
+    const newPasswordConfirm = document.getElementById("password-confirm").value;
+    await (0, _settings.updateUserData)({
+        currentPassword,
+        newPassword,
+        newPasswordConfirm
+    }, "password");
+    document.querySelector(".btn--save-password").textContent = "save passoword";
 });
 
 },{"./leaflet":"kmUTu","./login":"5jg8a","./logout":"elpbc","./settings":"38Dsn"}],"kmUTu":[function(require,module,exports) {
@@ -15722,20 +15741,21 @@ parcelHelpers.export(exports, "updateUserData", ()=>updateUserData);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
-const updateUserData = async (username, email)=>{
+const updateUserData = async (data, type)=>{
     try {
-        const res = await (0, _axiosDefault.default).patch("/api/v1/auth/update-me", {
-            username,
-            email
-        });
+        const res = await (0, _axiosDefault.default).patch(type === "password" ? "/api/v1/auth/update-password" : "/api/v1/auth/update-me", data);
         if (res.data.status === "success") {
-            (0, _alerts.showAlert)("success", "User successfully updated!");
+            (0, _alerts.showAlert)("success", `${type} successfully updated!`);
             setTimeout(()=>{
-                location.reload(true);
+                type === "password" ? location.assign("/login") : location.reload(true);
             }, 2000);
         }
     } catch (err) {
-        (0, _alerts.showAlert)("error", err.response.data.message);
+        if (err.response.data.error.code === 11000) {
+            const [[field, value]] = Object.entries(err.response.data.error.keyValue);
+            const msg = `${field} '${value}' already exists`;
+            (0, _alerts.showAlert)("error", msg);
+        } else (0, _alerts.showAlert)("error", err.response.data.message);
     }
 };
 

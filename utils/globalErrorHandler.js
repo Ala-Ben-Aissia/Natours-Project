@@ -59,11 +59,11 @@ function handleValidationError(err) {
 
 const handleCastError = (err) =>
    new AppError(`Invalid ${err.path}: ${err.value}`, 400);
-const handleDuplicateKeyError = (err) => {
+function handleDuplicateKeyError(err) {
    const [[field, value]] = Object.entries(err.keyValue);
    const msg = `duplicate key error collection: ${field} '${value}' already exists`;
    return new AppError(msg, 400);
-};
+}
 
 const handleJWTError = () => new AppError("invalid jwt token", 401);
 

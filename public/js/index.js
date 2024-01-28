@@ -8,6 +8,9 @@ const map = document.getElementById("map");
 const loginForm = document.querySelector(".form--login");
 const logoutBtn = document.querySelector(".nav__el--logout");
 const userDataForm = document.querySelector(".form-user-data");
+const userPasswordForm = document.querySelector(
+   ".form-user-password"
+);
 
 // Delegation
 if (map) {
@@ -16,23 +19,45 @@ if (map) {
 }
 
 if (loginForm) {
-   loginForm.addEventListener("submit", (e) => {
+   loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      login(email, password);
+      await login(email, password);
    });
 }
 
 if (logoutBtn) {
-   logoutBtn.addEventListener("click", logout);
+   logoutBtn.addEventListener("click", async () => {
+      await logout();
+   });
 }
 
 if (userDataForm) {
-   userDataForm.addEventListener("submit", (e) => {
+   userDataForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const username = document.getElementById("name").value;
       const email = document.querySelector("#email").value;
-      updateUserData(username, email);
+      await updateUserData({ username, email }, "data");
+   });
+}
+if (userPasswordForm) {
+   userPasswordForm.addEventListener("submit", async (e) => {
+      document.querySelector(".btn--save-password").textContent =
+         "updating..";
+      e.preventDefault();
+      const currentPassword = document.getElementById(
+         "password-current"
+      ).value;
+      const newPassword = document.getElementById("password").value;
+      const newPasswordConfirm = document.getElementById(
+         "password-confirm"
+      ).value;
+      await updateUserData(
+         { currentPassword, newPassword, newPasswordConfirm },
+         "password"
+      );
+      document.querySelector(".btn--save-password").textContent =
+         "save passoword";
    });
 }

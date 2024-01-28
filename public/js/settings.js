@@ -1,19 +1,31 @@
 import axios from "axios";
 import { showAlert } from "./alerts";
 
-export const updateUserData = async (username, email) => {
+export const updateUserData = async (data, type) => {
    try {
-      const res = await axios.patch("/api/v1/auth/update-me", {
-         username,
-         email,
-      });
+      const res = await axios.patch(
+         type === "password"
+            ? "/api/v1/auth/update-password"
+            : "/api/v1/auth/update-me",
+         data
+      );
       if (res.data.status === "success") {
-         showAlert("success", "User successfully updated!");
+         showAlert("success", `${type} successfully updated!`);
          setTimeout(() => {
-            location.reload(true);
+            type === "password"
+               ? location.assign("/login")
+               : location.reload(true);
          }, 2000);
       }
    } catch (err) {
-      showAlert("error", err.response.data.message);
+      if (err.response.data.error.code === 11000) {
+         const [[field, value]] = Object.entries(
+            err.response.data.error.keyValue
+         );
+         const msg = `${field} '${value}' already exists`;
+         showAlert("error", msg);
+      } else {
+         showAlert("error", err.response.data.message);
+      }
    }
 };
