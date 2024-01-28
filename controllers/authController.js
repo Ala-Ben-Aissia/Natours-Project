@@ -207,21 +207,21 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
    const { user } = req;
-   const { password, passwordConfirm, newPassword } = req.body;
+   const { currentPassword, newPassword, newPasswordConfirm } =
+      req.body;
    // if (!user.checkPwd(password, user.password))
    const currentUser = await User.findById(user.id).select(
       "+password"
    );
 
    const correctPasswords = await currentUser.checkPwd(
-      password,
+      currentPassword,
       currentUser.password
    );
    if (!correctPasswords)
-      return next(
-         new AppError("Please re-check your passwords!", 401)
-      );
+      return next(new AppError("Wrong current password!", 401));
    currentUser.password = newPassword;
+   currentUser.passwordConfirm = newPasswordConfirm;
    await currentUser.save({ validateModifiedOnly: true });
    sendNewJWT(res, user, 200);
 });
