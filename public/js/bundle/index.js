@@ -637,11 +637,11 @@ var _leaflet = require("leaflet");
 var _leafletDefault = parcelHelpers.interopDefault(_leaflet);
 const displayMap = (locations)=>{
     document.addEventListener("DOMContentLoaded", function() {
-        const bounds = (0, _leaflet.latLngBounds)();
         const mymap = (0, _leafletDefault.default).map("map", {
             scrollWheelZoom: false,
             center: locations[0].coordinates
-        }).setView(locations[0].coordinates, 5).fitBounds(locations.map((e)=>e.coordinates.reverse()));
+        }).setView(locations[0].coordinates, 5);
+        // .fitBounds(locations.map((e) => e.coordinates.reverse()));
         (0, _leafletDefault.default).tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution: "\xa9 OpenStreetMap contributors"
         }).addTo(mymap);
@@ -652,20 +652,27 @@ const displayMap = (locations)=>{
         //    radius: 5000,
         // }).addTo(mymap);
         // L.polygon();
-        (0, _leafletDefault.default).polygon(locations.map((e)=>e.coordinates)).addTo(mymap);
         locations.forEach((loc, i)=>{
-            const [lng, lat] = loc.coordinates.reverse();
+            const [lng, lat] = loc.coordinates;
             const x = (0, _leafletDefault.default).marker([
                 lat,
                 lng
             ]).addTo(mymap).bindPopup((0, _leafletDefault.default).popup({
-                maxWidth: 250,
+                maxWidth: 500,
                 minWidth: 100,
                 // autoClose: false,
                 closeOnClick: false
-            })).setPopupContent(`<h1>DAY ${loc.day}: ${loc.description}</h1>`);
+            })).setPopupContent(`<h1>Location ${i + 1}: ${loc.description}
+                (Day-${loc.day})</h1>`);
             if (i === 0) x.openPopup();
         });
+        mymap.fitBounds(locations.map((e)=>e.coordinates.reverse()), {
+            padding: [
+                150,
+                150
+            ]
+        });
+        (0, _leafletDefault.default).polygon(locations.map((e)=>e.coordinates)).addTo(mymap);
     });
 };
 
