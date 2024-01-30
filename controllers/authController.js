@@ -39,7 +39,7 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single("photo");
 
-exports.resizeUserPhoto = async (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
    if (!req.file) return next();
    const uniqueSuffix = `${req.user.id}-${Date.now()}.jpeg`;
    // set filename property to the file to be used in the next middleware (updateMe)
@@ -54,7 +54,7 @@ exports.resizeUserPhoto = async (req, res, next) => {
       .jpeg({ quality: 90 })
       .toFile(`public/img/users/${req.file.filename}`);
    next();
-};
+});
 
 const sendNewJWT = (res, user, code) => {
    const payload = { id: user.id };

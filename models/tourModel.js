@@ -70,6 +70,7 @@ const tourSchema = new mongoose.Schema(
             /\.(jpe?g)$/i,
             "Invalid image format. It should end with .jpeg or .jpg",
          ],
+         //TODO: Add default
          // i: case sensitive, e?: optional e, $: the end of the string, ^: the beginning of the string, \bpattern\b: exact match
       },
       images: [String],

@@ -46,7 +46,7 @@ exports.updateSettings = catchAsync(async (req, res, next) => {
          new: true,
       }
    );
-   // passwords are handled seperatly
+   // passwords are handled separately
    // findByIdAndUpdate won't trigger the save middleware (to hash pwds when saved into the db)
    res.status(200).render("profile", {
       user: updatedUser,

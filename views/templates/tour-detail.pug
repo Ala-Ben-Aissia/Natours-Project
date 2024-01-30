@@ -51,7 +51,7 @@ section.section-description
 section.section-pictures
    each image, i in tour.images 
       .picture-box
-         img.picture-box__img(class =` picture-box__img--${i}` src=`/img/tours/${image}`, alt=`${tour.name} ${i}`)
+         img.picture-box__img(class =`picture-box__img--${i}` src=`/img/tours/${image}`, alt=`${tour.name} ${i}`)
 
 section.section-map
    #map(data-locations=`${JSON.stringify(tour.locations)}`)
