@@ -14,6 +14,7 @@ const hpp = require("hpp");
 const path = require("path");
 const viewRouter = require("./routes/viewRoutes");
 const cookieParser = require("cookie-parser");
+const bookingRouter = require("./routes/bookingRoutes");
 
 const app = express();
 
@@ -67,6 +68,7 @@ app.use("/api/v1/tours", toursRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/bookings", bookingRouter);
 // handle unknown routes`
 app.use("*", (req, res, next) => {
    return next(new AppError(`Cannot find ${req.originalUrl}`, 404));

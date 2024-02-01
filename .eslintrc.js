@@ -11,7 +11,7 @@ module.exports = {
       ecmaVersion: "latest",
    },
    rules: {
-      "prefer-destructuring": ["warn", { object: true, array: true }],
+      "prefer-destructuring": ["warn", { object: true }],
       "no-unused-vars": "off",
       // "no-unused-vars": [
       // 	"warn",

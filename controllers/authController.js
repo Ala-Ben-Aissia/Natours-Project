@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../utils/appError");
 const { promisify } = require("util");
 const validator = require("validator");
-const sendEmail = require("../utils/sendEmail");
+const Email = require("../utils/sendEmail");
 const crypto = require("crypto");
 const multer = require("multer");
 const sharp = require("sharp");
@@ -88,6 +88,8 @@ exports.signUp = catchAsync(async (req, res) => {
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
    });
+   const link = `${req.protocol}://${req.get("host")}/me`;
+   await new Email(user, link).sendWelcome();
    sendNewJWT(res, user, 201);
 });
 
@@ -161,13 +163,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
    const resetUrl = `${req.protocol}://${req.get("host")}${
       req.baseUrl
    }/resetPassword/${passwordResetToken}`;
-   const options = {
-      email,
-      subject: "Password reset token",
-      text: `Natours password reset\nDear Natours user,\nWe’ve received your request to reset your password.\nPlease click the link below to complete the reset:\n${resetUrl}`,
-   };
    try {
-      await sendEmail(options);
+      const link = resetUrl;
+      await new Email(user, link).sendPasswordReset();
       res.status(200).json({
          status: "success",
          message: "Password reset link has been sent to the user",
