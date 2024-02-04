@@ -11,4 +11,19 @@ bookingRouter.post(
    bookingController.createCheckoutSession
 );
 
+bookingRouter.use(authController.restrictTo(["admin", "leader"]));
+
+bookingRouter
+   .route("/")
+   .get(bookingController.getAllBookings)
+   .post(bookingController.AddBooking);
+
+bookingRouter
+   .route("/:id")
+   .get(bookingController.getBooking)
+   .patch(
+      bookingController.updateBooking,
+      bookingController.deleteBooking
+   );
+
 module.exports = bookingRouter;

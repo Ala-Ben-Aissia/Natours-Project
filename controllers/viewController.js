@@ -1,5 +1,6 @@
 const Tour = require("../models/tourModel");
 const User = require("../models/userModel");
+const Booking = require("../models/bookingModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
@@ -50,5 +51,22 @@ exports.updateSettings = catchAsync(async (req, res, next) => {
    // findByIdAndUpdate won't trigger the save middleware (to hash pwds when saved into the db)
    res.status(200).render("profile", {
       user: updatedUser,
+   });
+});
+
+exports.myBookings = catchAsync(async (req, res) => {
+   // find all user's bookings
+   const bookings = await Booking.find({ user: req.user.id }).sort({
+      createdAt: "desc",
+   });
+   // we could also use virtual populate on the tours
+   // find matching tours
+   const toursIds = bookings.map((e) => e.tour);
+   const bookedTours = await Tour.find({
+      _id: { $in: toursIds },
+   });
+   res.status(200).render("overview", {
+      title: "My Tours",
+      tours: bookedTours,
    });
 });

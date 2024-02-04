@@ -1,9 +1,23 @@
 const { default: Stripe } = require("stripe");
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
+const Booking = require("../models/bookingModel");
 require("dotenv").config();
+const {
+   getAllDocs,
+   getDoc,
+   createDoc,
+   updateDoc,
+   deleteDoc,
+} = require("../utils/docCRUD");
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+exports.getAllBookings = getAllDocs(Booking);
+exports.getBooking = getDoc(Booking);
+exports.AddBooking = createDoc(Booking);
+exports.updateBooking = updateDoc(Booking);
+exports.deleteBooking = deleteDoc(Booking);
 
 exports.createCheckoutSession = catchAsync(async (req, res, next) => {
    // booked tour
@@ -13,7 +27,11 @@ exports.createCheckoutSession = catchAsync(async (req, res, next) => {
    const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      success_url: `${req.protocol}://${req.get("host")}/`,
+      success_url: `${req.protocol}://${req.get("host")}/?user=${
+         req.user.id
+      }&tour=${tour.id}&price=${tour.price}`,
+      // temporary (unsecure req.query use since anyone can book tours without paying)
+      // exposed request query
       cancel_url: `${req.protocol}://${req.get("host")}/tours/${
          tour.slug
       }`,
@@ -42,4 +60,11 @@ exports.createCheckoutSession = catchAsync(async (req, res, next) => {
       status: "success",
       session,
    });
+});
+
+exports.createBookingCheckout = catchAsync(async (req, res, next) => {
+   const { user, tour, price } = req.query; // check success_url
+   if (!(user && tour && price)) return next();
+   await Booking.create({ user, tour, price });
+   res.redirect(req.originalUrl.split("?")[0]); // do not expose query string params
 });

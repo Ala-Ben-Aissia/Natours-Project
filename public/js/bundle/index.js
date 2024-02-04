@@ -15804,5 +15804,5 @@ const bookTour = async (tourId)=>{
     }
 };
 
-},{"axios":"atfHC","@parcel/transformer-js/src/esmodule-helpers.js":"dkje0","./alerts":"lpv2Q"}]},["gGyvL","gnfYV"], "gnfYV", "parcelRequire2aee")
+},{"axios":"atfHC","./alerts":"lpv2Q","@parcel/transformer-js/src/esmodule-helpers.js":"dkje0"}]},["gGyvL","gnfYV"], "gnfYV", "parcelRequire2aee")
 
