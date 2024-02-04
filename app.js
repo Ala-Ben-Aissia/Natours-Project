@@ -76,5 +76,4 @@ app.use("*", (req, res, next) => {
 
 // Global Error Handling
 app.use(globalErrorHandler);
-
 module.exports = app;

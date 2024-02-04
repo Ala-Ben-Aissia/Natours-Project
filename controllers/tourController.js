@@ -10,6 +10,7 @@ const {
    updateDoc,
    deleteDoc,
 } = require("../utils/docCRUD");
+require("dotenv").config();
 
 const multerStorage = multer.memoryStorage();
 // accepts only images

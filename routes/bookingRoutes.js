@@ -6,9 +6,9 @@ const bookingRouter = express.Router();
 
 bookingRouter.use(authController.protect);
 
-bookingRouter.get(
+bookingRouter.post(
    "/checkout-session/:tourId",
-   bookingController.getCheckoutSession
+   bookingController.createCheckoutSession
 );
 
 module.exports = bookingRouter;

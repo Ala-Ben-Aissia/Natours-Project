@@ -1,10 +1,11 @@
 const { default: Stripe } = require("stripe");
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
+require("dotenv").config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-exports.getCheckoutSession = catchAsync(async (req, res, next) => {
+exports.createCheckoutSession = catchAsync(async (req, res, next) => {
    // booked tour
    const tour = await Tour.findById(req.params.tourId);
    // create checkout session

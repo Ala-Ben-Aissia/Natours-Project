@@ -2,6 +2,7 @@ import { displayMap } from "./leaflet";
 import { login } from "./login";
 import { logout } from "./logout";
 import { updateUserData } from "./settings";
+import { bookTour } from "./stripe";
 
 // DOM Elements
 const map = document.getElementById("map");
@@ -11,11 +12,17 @@ const userDataForm = document.querySelector(".form-user-data");
 const userPasswordForm = document.querySelector(
    ".form-user-password"
 );
+const bookBtn = document.getElementById("book-tour");
 
 // Delegation
 if (map) {
    const locations = JSON.parse(map.dataset.locations);
    displayMap(locations);
+   bookBtn.addEventListener("click", async (e) => {
+      e.target.textContent = "Processing...";
+      const { tourId } = e.target.dataset;
+      await bookTour(tourId);
+   });
 }
 
 if (loginForm) {
@@ -64,6 +71,14 @@ if (userPasswordForm) {
          "password"
       );
       document.querySelector(".btn--save-password").textContent =
-         "save passoword";
+         "save password";
    });
 }
+
+// if (bookBtn) {
+//    bookBtn.addEventListener("click", async (e) => {
+//       e.target.textContent = "Processing...";
+//       const { tourId } = e.target.dataset;
+//       await bookTour(tourId);
+//    });
+// }
