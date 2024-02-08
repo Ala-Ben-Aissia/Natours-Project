@@ -8,10 +8,10 @@ Natours is a web application designed to facilitate nature tours. It allows user
 - **Tour Booking**: Users can browse available tours and book their desired tours.
 - **Payment Integration**: Secure payment processing using Stripe API for tour bookings.
 - **Interactive Map**: Each tour has an interactive map displaying tour stops and dates.
+- **Tour Retrieval by Distance Range**: user can retrieve tours within a certain distance range from a specified location through APIs
 - **Admin Panel**: Admins and tour leaders have access to additional functionalities:
   - **Tour Statistics**: View statistics related to tours, such as booking numbers and revenue.
   - **Tour History**: Access the history of tours for each year.
-  - **Tour Retrieval by Distance Range**: Admins can retrieve tours within a certain distance range from a specified location through APIs
 
 ## Technologies Used
 
