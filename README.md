@@ -15,7 +15,7 @@ Natours is a web application designed to facilitate nature tours. It allows user
 
 ## Technologies Used
 
-- **Frontend**: HTML, CSS, JavaScript, React.js
+- **Frontend**: HTML, CSS, JavaScript, Pug.js
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: JWT (JSON Web Tokens)
