@@ -11,6 +11,7 @@ Natours is a web application designed to facilitate nature tours. It allows user
 - **Admin Panel**: Admins and tour leaders have access to additional functionalities:
   - **Tour Statistics**: View statistics related to tours, such as booking numbers and revenue.
   - **Tour History**: Access the history of tours for each year.
+  -   - **Tour Retrieval by Distance Range**: Admins can retrieve tours within a certain distance range from a specified location through APIs
 
 ## Technologies Used
 
